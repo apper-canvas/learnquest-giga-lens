@@ -72,7 +72,6 @@ export default {
         sparkle: {
           '0%, 100%': { opacity: '0', transform: 'scale(0.8)' },
           '50%': { opacity: '1', transform: 'scale(1.2)' }
-'50%': { opacity: '1', transform: 'scale(1.2)' }
         },
 'bounce-gentle': {
           '0%, 100%': { transform: 'translateY(0)', animationTimingFunction: 'cubic-bezier(0,0,0.2,1)' },
