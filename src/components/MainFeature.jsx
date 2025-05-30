@@ -1968,29 +1968,6 @@ className={`game-card p-6 sm:p-8 lg:p-12 relative overflow-hidden ${(gameMode ==
           </div>
 
           {/* Story Question */}
-          {currentStory.chapters[storyProgress.currentChapter]?.question && (
-            <div className="mb-8 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-2xl p-6">
-              <h4 className="text-lg font-bold mb-4 text-center text-blue-800">
-                Reading Comprehension Question
-              </h4>
-              <p className="text-gray-800 font-medium mb-4 text-center">
-                {currentStory.chapters[storyProgress.currentChapter].question.text}
-              </p>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                {currentStory.chapters[storyProgress.currentChapter].question.options.map((option, index) => (
-                  <motion.button
-                    key={index}
-                    onClick={() => handleStoryQuestionSubmit(index)}
-                    className="question-option text-center p-3 rounded-xl bg-white border-2 border-blue-200 hover:border-blue-400 hover:bg-blue-50 transition-all duration-200"
-                    whileHover={{ scale: 1.02 }}
-                    whileTap={{ scale: 0.98 }}
-                  >
-                    <span className="font-fun text-gray-800">{option}</span>
-                  </motion.button>
-                ))}
-              </div>
-            </div>
-          )}
 
           {/* Continue Button */}
           <div className="text-center">
