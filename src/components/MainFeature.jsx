@@ -1876,141 +1876,13 @@ transition={{ duration: 0.6, delay: 0.4 }}
             </motion.button>
           </div>
         </motion.div>
-      )}
-          transition={{ duration: 0.6, delay: 0.4 }}
-          className="game-card p-6 sm:p-8 lg:p-12 mb-8"
-        >
-          <div className="text-center mb-8">
-            <h2 className="text-3xl font-bold font-fun mb-4">🧠 Choose Your Quiz Topic</h2>
-            <p className="text-gray-600 text-lg">Select a skill area to test your knowledge!</p>
-          </div>
-          
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {quizTopics.map((topic) => (
-              <motion.button
-                key={topic.id}
-                onClick={() => startQuiz(topic.id)}
-                className={`bg-gradient-to-r ${topic.color} text-white rounded-2xl p-6 text-left hover:shadow-lg transition-all duration-300`}
-                whileHover={{ scale: 1.02, y: -5 }}
-                whileTap={{ scale: 0.98 }}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.3, delay: 0.1 }}
-              >
-                <div className="flex items-start gap-4">
-                  <div className="bg-white/20 p-3 rounded-xl">
-                    <ApperIcon name={topic.icon} className="w-8 h-8" />
-                  </div>
-                  <div className="flex-1">
-                    <h3 className="text-xl font-bold font-fun mb-2">{topic.name}</h3>
-                    <p className="text-white/90 text-sm mb-3">{topic.description}</p>
-                    <div className="flex items-center justify-between">
-                      <span className="text-xs bg-white/20 px-2 py-1 rounded-full">
-                        {topic.questions.length} Questions
-                      </span>
-                      <ApperIcon name="ArrowRight" className="w-5 h-5" />
-                    </div>
-                  </div>
-                </div>
-              </motion.button>
-            ))}
-          </div>
-        </motion.div>
-      )}
-
-      {/* Quiz Results */}
-      {showQuizResults && quizResults && (
-        <motion.div 
-          initial={{ y: 100, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          transition={{ duration: 0.6 }}
-          className="game-card p-6 sm:p-8 lg:p-12 mb-8"
-        >
-          <div className="text-center mb-8">
-            <motion.div
-              initial={{ scale: 0 }}
-              animate={{ scale: 1 }}
-              transition={{ duration: 0.5, delay: 0.2 }}
-              className="text-6xl mb-4"
-            >
-              {quizResults.accuracy >= 90 ? '🏆' : quizResults.accuracy >= 70 ? '🌟' : '📚'}
-            </motion.div>
-            <h2 className="text-3xl font-bold font-fun mb-2">Quiz Complete!</h2>
-            <h3 className="text-xl text-gray-600 mb-6">{quizResults.topic}</h3>
-          </div>
-          
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-            <div className="text-center p-4 bg-gradient-to-br from-blue-50 to-blue-100 rounded-2xl">
-              <div className="text-3xl font-bold text-blue-600 font-fun">{quizResults.correctAnswers}</div>
-              <div className="text-blue-800 font-medium">Correct Answers</div>
-              <div className="text-sm text-blue-600">out of {quizResults.totalQuestions}</div>
-            </div>
-            
-            <div className="text-center p-4 bg-gradient-to-br from-green-50 to-green-100 rounded-2xl">
-              <div className="text-3xl font-bold text-green-600 font-fun">{quizResults.accuracy}%</div>
-              <div className="text-green-800 font-medium">Accuracy</div>
-              <div className="text-sm text-green-600">
-                {quizResults.accuracy >= 90 ? 'Excellent!' : quizResults.accuracy >= 70 ? 'Good job!' : 'Keep practicing!'}
-              </div>
-            </div>
-            
-            <div className="text-center p-4 bg-gradient-to-br from-purple-50 to-purple-100 rounded-2xl">
-              <div className="text-3xl font-bold text-purple-600 font-fun">{quizResults.totalScore}</div>
-              <div className="text-purple-800 font-medium">Total Points</div>
-              <div className="text-sm text-purple-600">Well earned!</div>
-            </div>
-          </div>
-          
-          <div className="mb-8">
-            <h4 className="text-lg font-bold mb-4 flex items-center gap-2">
-              <ApperIcon name="Target" className="w-5 h-5 text-primary" />
-              Skills Practiced
-            </h4>
-            <div className="flex flex-wrap gap-2">
-              {quizResults.skills.map((skill, index) => (
-                <span 
-                  key={index}
-                  className="bg-gradient-to-r from-secondary/20 to-secondary/30 text-secondary-dark px-3 py-1 rounded-full text-sm font-medium"
-                >
-                  {skill}
-                </span>
-              ))}
-            </div>
-          </div>
-          
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <motion.button
-              onClick={() => startQuiz(currentQuizTopic?.id)}
-              className="game-button text-lg px-8 py-3"
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-            >
-              <div className="flex items-center gap-2">
-                <ApperIcon name="RotateCcw" className="w-5 h-5" />
-                Try Again
-              </div>
-            </motion.button>
-            
-            <motion.button
-              onClick={exitQuiz}
-              className="bg-gradient-to-r from-gray-400 to-gray-600 text-white font-bold py-3 px-8 rounded-2xl shadow-game hover:shadow-lg transform hover:scale-105 active:scale-95 transition-all duration-200 border-2 border-white/20"
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-            >
-              <div className="flex items-center gap-2">
-                <ApperIcon name="Home" className="w-5 h-5" />
-                Back to Home
-              </div>
-            </motion.button>
-          </div>
-        </motion.div>
-      )}
-      {/* Main Game Area */}
+)}
       <motion.div 
         initial={{ y: 100, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ duration: 0.6, delay: 0.4 }}
 className={`game-card p-6 sm:p-8 lg:p-12 relative overflow-hidden ${(gameMode === 'quiz' && !quizMode) || (gameMode === 'stories' && !storyMode) || showQuizResults || showStoryResults || !questions?.length ? 'hidden' : ''}`}
+      >
 {/* Story Mode Interface */}
       {storyMode && currentStory && (
         <motion.div 
@@ -2155,9 +2027,9 @@ className={`game-card p-6 sm:p-8 lg:p-12 relative overflow-hidden ${(gameMode ==
               Chapter {storyProgress.currentChapter + 1} of {currentStory.chapters.length}
             </p>
           </div>
-        </motion.div>
+</motion.div>
       )}
-      >
+
         {/* Background decoration */}
         <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-bl from-primary/10 to-transparent rounded-full -translate-y-16 translate-x-16"></div>
         <div className="absolute bottom-0 left-0 w-24 h-24 bg-gradient-to-tr from-secondary/10 to-transparent rounded-full translate-y-12 -translate-x-12"></div>
@@ -2182,24 +2054,24 @@ className={`game-card p-6 sm:p-8 lg:p-12 relative overflow-hidden ${(gameMode ==
               />
             </div>
             <h2 className="text-lg sm:text-xl font-bold text-gray-600 font-fun">
-{quizMode ? `${currentQuizTopic?.name} Quiz` : gameMode === 'math' ? 'Math Challenge' : 'Reading Challenge'}
+              {quizMode ? `${currentQuizTopic?.name} Quiz` : gameMode === 'math' ? 'Math Challenge' : 'Reading Challenge'}
             </h2>
           </div>
           
           <h3 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-800 mb-6 font-fun leading-tight">
-{questions?.[currentQuestion]?.question || 'Loading question...'}
+            {questions?.[currentQuestion]?.question || 'Loading question...'}
           </h3>
         </motion.div>
 
         {/* Answer Options */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6 mb-8">
-{questions?.[currentQuestion]?.options?.map((option, index) => (
+          {questions?.[currentQuestion]?.options?.map((option, index) => (
             <motion.button
               key={index}
               onClick={() => handleAnswerSelect(index)}
               className={`question-option text-left font-medium text-lg sm:text-xl p-4 sm:p-6 ${
                 selectedAnswer === index ? 'selected' : ''
-} ${
+              } ${
                 showResult && index === questions?.[currentQuestion]?.correct ? 'correct' : ''
               } ${
                 showResult && selectedAnswer === index && index !== questions?.[currentQuestion]?.correct ? 'incorrect' : ''
@@ -2302,7 +2174,9 @@ className={`game-card p-6 sm:p-8 lg:p-12 relative overflow-hidden ${(gameMode ==
         >
           {streak > 2 ? '🤩' : streak > 0 ? '😊' : '🙂'}
         </motion.div>
-{/* Mini-Game Launcher Button */}
+      </motion.div>
+
+      {/* Mini-Game Launcher Button */}
       {(currentQuestion > 0 && currentQuestion % 2 === 0) && (
         <motion.div
           initial={{ scale: 0, opacity: 0 }}
@@ -2416,7 +2290,6 @@ className={`game-card p-6 sm:p-8 lg:p-12 relative overflow-hidden ${(gameMode ==
           </motion.div>
         )}
       </AnimatePresence>
-      </motion.div>
     </div>
   )
 }
