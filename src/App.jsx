@@ -25,6 +25,7 @@ const initializeOfflineData = () => {
       math: [],
       reading: [],
       quiz: {}
+stories: []
     },
     lastSync: new Date().toISOString(),
     offlineActions: []

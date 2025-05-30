@@ -52,6 +52,25 @@
   .sparkle-effect {
     @apply animate-sparkle;
   }
+.story-choice {
+    @apply bg-white/90 border-2 border-gray-200 rounded-xl p-4 cursor-pointer hover:border-pink-400 hover:bg-pink-50 transition-all duration-200 transform hover:scale-105;
+  }
+  
+  .story-choice.selected {
+    @apply border-pink-500 bg-pink-100 shadow-soft;
+  }
+  
+  .story-text {
+    @apply text-gray-800 leading-relaxed;
+  }
+  
+  .character-dialogue {
+    @apply bg-gradient-to-r from-pink-50 to-purple-50 border-l-4 border-pink-500 rounded-lg p-4 italic;
+  }
+  
+  .story-progress {
+    @apply flex justify-center items-center gap-2;
+  }
 }
 /* Offline Mode Styles */
   .offline-indicator {

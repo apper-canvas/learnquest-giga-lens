@@ -37,7 +37,7 @@ const MainFeature = () => {
   const [showResult, setShowResult] = useState(false)
   const [score, setScore] = useState(0)
   const [streak, setStreak] = useState(0)
-const [gameMode, setGameMode] = useState('math') // 'math', 'reading', or 'quiz'
+const [gameMode, setGameMode] = useState('math') // 'math', 'reading', 'quiz', or 'stories'
   const [difficulty, setDifficulty] = useState(1)
   const [hearts, setHearts] = useState(3)
   const [showCelebration, setShowCelebration] = useState(false)
@@ -50,6 +50,19 @@ const [quizMode, setQuizMode] = useState(false)
 
 const [isOnline, setIsOnline] = useState(navigator.onLine)
   const [offlineMode, setOfflineMode] = useState(false)
+// Story mode states
+  const [storyMode, setStoryMode] = useState(false)
+  const [currentStory, setCurrentStory] = useState(null)
+  const [storyProgress, setStoryProgress] = useState({
+    currentChapter: 0,
+    choices: [],
+    questionsAnswered: 0,
+    comprehensionScore: 0
+  })
+  const [selectedChoice, setSelectedChoice] = useState(null)
+  const [showStoryResult, setShowStoryResult] = useState(false)
+  const [storyResults, setStoryResults] = useState(null)
+  const [showStoryResults, setShowStoryResults] = useState(false)
 
   // Load offline progress on component mount
   useEffect(() => {
@@ -576,13 +589,433 @@ const [isOnline, setIsOnline] = useState(navigator.onLine)
     }
     return gameMode === 'math' ? mathQuestions : readingQuestions
   }, [quizMode, currentQuizTopic, gameMode])
+// Interactive Stories Data
+  const interactiveStories = [
+    {
+      id: 'forest-adventure',
+      title: 'The Magical Forest Adventure',
+      description: 'Help Luna find her way through an enchanted forest',
+      difficulty: 'Beginner',
+      icon: 'TreePine',
+      color: 'from-green-400 to-green-600',
+      estimatedTime: '10-15 min',
+      chapters: [
+        {
+          id: 0,
+          title: 'The Lost Path',
+          content: "Luna was walking through the forest when she realized she was lost. The tall trees seemed to whisper secrets, and magical creatures peeked from behind the bushes.",
+          character: "Luna",
+          dialogue: "Oh no! I don't recognize this part of the forest. Which way should I go?",
+          choices: [
+            { 
+              id: 'left', 
+              text: 'Follow the sparkling stream to the left',
+              consequence: 'Luna discovers a friendly water fairy who offers help'
+            },
+            { 
+              id: 'right', 
+              text: 'Take the rocky path to the right',
+              consequence: 'Luna meets a wise old owl who knows the forest well'
+            },
+            { 
+              id: 'straight', 
+              text: 'Continue straight through the thick bushes',
+              consequence: 'Luna finds a hidden clearing with magical flowers'
+            }
+          ],
+          question: {
+            text: "How do you think Luna is feeling right now?",
+            options: ["Excited and curious", "Worried and scared", "Angry and frustrated", "Sleepy and tired"],
+            correct: 1,
+            explanation: "Luna is lost in an unfamiliar place, which would naturally make someone feel worried and scared."
+          }
+        },
+        {
+          id: 1,
+          title: 'A Helpful Friend',
+          content: "Based on her choice, Luna encounters a magical creature willing to help her find her way home.",
+          character: "Helper",
+          dialogue: "Don't worry, little one! I know these woods like the back of my hand. But first, can you answer my riddle?",
+          choices: [
+            { 
+              id: 'accept', 
+              text: 'Accept the challenge eagerly',
+              consequence: 'The helper is impressed by Luna\'s bravery'
+            },
+            { 
+              id: 'hesitate', 
+              text: 'Ask for a hint first',
+              consequence: 'The helper appreciates Luna\'s thoughtfulness'
+            },
+            { 
+              id: 'decline', 
+              text: 'Politely ask for directions instead',
+              consequence: 'The helper respects Luna\'s honesty'
+            }
+          ],
+          question: {
+            text: "What does 'like the back of my hand' mean?",
+            options: ["Something is very familiar", "Something looks like a hand", "Something is behind you", "Something is very small"],
+            correct: 0,
+            explanation: "This phrase means knowing something very well, just like you know your own hand."
+          }
+        },
+        {
+          id: 2,
+          title: 'The Way Home',
+          content: "With the magical creature's help, Luna learns an important lesson about forest safety and finds her way back to the familiar path.",
+          character: "Luna",
+          dialogue: "Thank you so much! I'll never forget to bring a map next time I explore the forest.",
+          choices: [
+            { 
+              id: 'grateful', 
+              text: 'Thank the helper and promise to be more careful',
+              consequence: 'Luna gains wisdom and confidence'
+            },
+            { 
+              id: 'excited', 
+              text: 'Ask the helper about more forest adventures',
+              consequence: 'Luna discovers there are more stories to explore'
+            }
+          ],
+          question: {
+            text: "What is the main lesson Luna learned?",
+            options: ["Always bring a map when exploring", "Forest creatures are scary", "It's fun to get lost", "Never go outside"],
+            correct: 0,
+            explanation: "Luna learned the importance of being prepared with a map when exploring new places."
+          }
+        }
+      ]
+    },
+    {
+      id: 'space-mystery',
+      title: 'The Space Station Mystery',
+      description: 'Detective Zara solves puzzles aboard a space station',
+      difficulty: 'Intermediate',
+      icon: 'Rocket',
+      color: 'from-purple-400 to-purple-600',
+      estimatedTime: '15-20 min',
+      chapters: [
+        {
+          id: 0,
+          title: 'Strange Signals',
+          content: "Detective Zara received an urgent message from the International Space Station. Strange signals were disrupting all communications, and the crew needed her help.",
+          character: "Zara",
+          dialogue: "These signals form a pattern. If I can decode them, I might discover what's causing the interference.",
+          choices: [
+            { 
+              id: 'computer', 
+              text: 'Use the computer to analyze the signal patterns',
+              consequence: 'Zara discovers the signals are mathematical sequences'
+            },
+            { 
+              id: 'manual', 
+              text: 'Study the signals manually with pencil and paper',
+              consequence: 'Zara notices patterns the computer missed'
+            },
+            { 
+              id: 'team', 
+              text: 'Ask the space station crew for their observations',
+              consequence: 'The crew provides valuable clues about timing'
+            }
+          ],
+          question: {
+            text: "What does 'interference' mean in this story?",
+            options: ["Helping with something", "Blocking or disrupting something", "Making something louder", "Fixing something broken"],
+            correct: 1,
+            explanation: "Interference means something that blocks or disrupts normal operations."
+          }
+        },
+        {
+          id: 1,
+          title: 'The Source',
+          content: "Zara's investigation leads her to discover that the signals are coming from a malfunctioning satellite that needs to be repaired.",
+          character: "Commander",
+          dialogue: "Excellent work, Detective! Now we need to decide how to fix the satellite. What do you recommend?",
+          choices: [
+            { 
+              id: 'spacewalk', 
+              text: 'Perform a spacewalk to repair it manually',
+              consequence: 'A dramatic but successful repair mission'
+            },
+            { 
+              id: 'remote', 
+              text: 'Try to fix it remotely using robotic arms',
+              consequence: 'A safer but more complex technical solution'
+            },
+            { 
+              id: 'replace', 
+              text: 'Launch a replacement satellite',
+              consequence: 'A costly but guaranteed solution'
+            }
+          ],
+          question: {
+            text: "Based on the story, what kind of person is Detective Zara?",
+            options: ["Lazy and uninterested", "Smart and determined", "Scared and worried", "Angry and impatient"],
+            correct: 1,
+            explanation: "Zara shows intelligence by solving the mystery and determination by helping the space station."
+          }
+        },
+        {
+          id: 2,
+          title: 'Mission Success',
+          content: "Thanks to Zara's detective work and the crew's teamwork, the space station's communications are restored, and everyone learns about the importance of backup systems.",
+          character: "Zara",
+          dialogue: "This adventure taught me that even in space, teamwork and careful thinking can solve any problem!",
+          choices: [
+            { 
+              id: 'celebrate', 
+              text: 'Celebrate with the crew and share stories',
+              consequence: 'Everyone becomes good friends and allies'
+            },
+            { 
+              id: 'document', 
+              text: 'Write a detailed report for future missions',
+              consequence: 'Zara helps prevent similar problems in the future'
+            }
+          ],
+          question: {
+            text: "What is the theme of this story?",
+            options: ["Space is dangerous", "Teamwork solves problems", "Technology always fails", "Detectives are smart"],
+            correct: 1,
+            explanation: "The story shows how working together and thinking carefully can overcome challenges."
+          }
+        }
+      ]
+    },
+    {
+      id: 'underwater-kingdom',
+      title: 'The Underwater Kingdom',
+      description: 'Marina explores the depths of the ocean kingdom',
+      difficulty: 'Advanced',
+      icon: 'Fish',
+      color: 'from-blue-400 to-blue-600',
+      estimatedTime: '20-25 min',
+      chapters: [
+        {
+          id: 0,
+          title: 'The Coral Palace',
+          content: "Marina, a marine biologist, discovered an ancient underwater kingdom while studying coral reefs. The palace was magnificent, built entirely from living coral and surrounded by colorful fish.",
+          character: "Marina",
+          dialogue: "This is incredible! But I notice the coral looks unhealthy. I wonder what's causing this environmental problem.",
+          choices: [
+            { 
+              id: 'samples', 
+              text: 'Collect water samples to test for pollution',
+              consequence: 'Marina discovers chemical contamination from above'
+            },
+            { 
+              id: 'fish', 
+              text: 'Observe the fish behavior for clues',
+              consequence: 'The fish lead Marina to the source of the problem'
+            },
+            { 
+              id: 'coral', 
+              text: 'Examine the coral structure more closely',
+              consequence: 'Marina finds signs of rising ocean temperature'
+            }
+          ],
+          question: {
+            text: "What is a marine biologist?",
+            options: ["Someone who studies ocean life", "Someone who builds boats", "Someone who catches fish", "Someone who cleans beaches"],
+            correct: 0,
+            explanation: "A marine biologist is a scientist who studies plants and animals that live in the ocean."
+          }
+        },
+        {
+          id: 1,
+          title: 'The Ocean Guardian',
+          content: "Marina meets Nereia, the guardian of the underwater kingdom, who explains that the coral is dying due to pollution from the surface world.",
+          character: "Nereia",
+          dialogue: "Young scientist, our kingdom has thrived for centuries, but now we face a crisis. Will you help us find a solution?",
+          choices: [
+            { 
+              id: 'research', 
+              text: 'Promise to research solutions back on land',
+              consequence: 'Marina begins a long-term conservation project'
+            },
+            { 
+              id: 'immediate', 
+              text: 'Look for immediate ways to help the coral',
+              consequence: 'Marina and Nereia work together on emergency measures'
+            },
+            { 
+              id: 'educate', 
+              text: 'Suggest educating people about ocean protection',
+              consequence: 'Marina becomes an ambassador for ocean conservation'
+            }
+          ],
+          question: {
+            text: "What does 'thrived' mean in this context?",
+            options: ["Struggled and failed", "Grown and succeeded", "Stayed the same", "Disappeared completely"],
+            correct: 1,
+            explanation: "To thrive means to grow successfully and flourish over time."
+          }
+        },
+        {
+          id: 2,
+          title: 'A New Alliance',
+          content: "Marina and Nereia form a partnership between the human and underwater worlds, working together to protect the ocean and educate others about marine conservation.",
+          character: "Marina",
+          dialogue: "Together, we can make a difference. Science and ancient wisdom combined can heal our oceans.",
+          choices: [
+            { 
+              id: 'foundation', 
+              text: 'Start a foundation for ocean protection',
+              consequence: 'Marina creates lasting change through organized efforts'
+            },
+            { 
+              id: 'technology', 
+              text: 'Develop new technology to clean the oceans',
+              consequence: 'Marina invents innovative solutions for marine protection'
+            }
+          ],
+          question: {
+            text: "What is the main message of this story?",
+            options: ["Oceans are scary places", "Science and cooperation can solve environmental problems", "Fish are more important than people", "Ancient kingdoms are just myths"],
+            correct: 1,
+            explanation: "The story shows how scientific knowledge and cooperation between different groups can address environmental challenges."
+          }
+        }
+      ]
+    }
+  ]
+
+  // Story management functions
+  const startStory = (storyId) => {
+    const story = interactiveStories.find(s => s.id === storyId)
+    if (story) {
+      setCurrentStory(story)
+      setStoryProgress({
+        currentChapter: 0,
+        choices: [],
+        questionsAnswered: 0,
+        comprehensionScore: 0
+      })
+      setSelectedChoice(null)
+      setShowStoryResult(false)
+      setStoryMode(true)
+      setShowStoryResults(false)
+      toast.info(`Starting "${story.title}"! 📖`, {
+        position: "top-center",
+        autoClose: 2000,
+      })
+    }
+  }
+
+  const handleStoryChoice = (choiceId) => {
+    if (showStoryResult) return
+    setSelectedChoice(choiceId)
+  }
+
+  const handleStorySubmit = () => {
+    if (!selectedChoice || showStoryResult) return
+    
+    const currentChapter = currentStory.chapters[storyProgress.currentChapter]
+    const selectedChoiceObj = currentChapter.choices.find(c => c.id === selectedChoice)
+    
+    // Add choice to progress
+    const newChoices = [...storyProgress.choices, selectedChoice]
+    
+    // Show choice consequence
+    toast.info(selectedChoiceObj.consequence, {
+      position: "top-center",
+      autoClose: 3000,
+    })
+    
+    setShowStoryResult(true)
+    
+    // Move to next chapter or question after delay
+    setTimeout(() => {
+      if (storyProgress.currentChapter + 1 < currentStory.chapters.length) {
+        setStoryProgress(prev => ({
+          ...prev,
+          currentChapter: prev.currentChapter + 1,
+          choices: newChoices
+        }))
+        setSelectedChoice(null)
+        setShowStoryResult(false)
+      } else {
+        handleStoryComplete()
+      }
+    }, 2000)
+  }
+
+  const handleStoryQuestionSubmit = (answerIndex) => {
+    const currentChapter = currentStory.chapters[storyProgress.currentChapter]
+    const isCorrect = answerIndex === currentChapter.question.correct
+    
+    if (isCorrect) {
+      const points = 20
+      setScore(prev => prev + points)
+      setStoryProgress(prev => ({
+        ...prev,
+        questionsAnswered: prev.questionsAnswered + 1,
+        comprehensionScore: prev.comprehensionScore + points
+      }))
+      toast.success(`Correct! +${points} points! 🎉`, {
+        position: "top-center",
+        autoClose: 2000,
+      })
+    } else {
+      toast.info(`${currentChapter.question.explanation}`, {
+        position: "top-center",
+        autoClose: 4000,
+      })
+    }
+  }
+
+  const handleStoryComplete = () => {
+    const totalPossibleScore = currentStory.chapters.length * 20
+    const accuracy = Math.round((storyProgress.comprehensionScore / totalPossibleScore) * 100)
+    
+    const results = {
+      storyTitle: currentStory.title,
+      chaptersCompleted: currentStory.chapters.length,
+      questionsAnswered: storyProgress.questionsAnswered,
+      comprehensionScore: storyProgress.comprehensionScore,
+      accuracy,
+      choices: storyProgress.choices,
+      totalReadingTime: Date.now() // Simple timestamp
+    }
+    
+    setStoryResults(results)
+    setShowStoryResults(true)
+    setStoryMode(false)
+    
+    // Achievement toasts based on comprehension
+    if (accuracy >= 90) {
+      toast.success(`📚 Excellent reading comprehension! You understood "${currentStory.title}" perfectly!`, {
+        position: "top-center",
+        autoClose: 3000,
+      })
+    } else if (accuracy >= 70) {
+      toast.success(`🌟 Great job reading "${currentStory.title}"! ${accuracy}% comprehension!`, {
+        position: "top-center",
+        autoClose: 3000,
+      })
+    } else {
+      toast.info(`📖 Keep reading more stories to improve your comprehension skills!`, {
+        position: "top-center",
+        autoClose: 3000,
+      })
+    }
+  }
+
+  const exitStory = () => {
+    setStoryMode(false)
+    setCurrentStory(null)
+    setShowStoryResults(false)
+    setGameMode('reading')
+    resetGame()
+  }
 const switchMode = (mode) => {
     setGameMode(mode)
     setQuizMode(false)
     setCurrentQuizTopic(null)
     setShowQuizResults(false)
     resetGame()
-    const modeText = mode === 'math' ? 'Math' : mode === 'reading' ? 'Reading' : 'Quiz'
+const modeText = mode === 'math' ? 'Math' : mode === 'reading' ? 'Reading' : mode === 'quiz' ? 'Quiz' : 'Stories'
     toast.info(`Switched to ${modeText} Quest! 📚`, {
       position: "top-center",
       autoClose: 2000,
@@ -1086,6 +1519,19 @@ useEffect(() => {
           <ApperIcon name="Brain" className="w-6 h-6" />
           Quiz Mode
         </motion.button>
+<motion.button
+          onClick={() => switchMode('stories')}
+          className={`px-6 py-3 rounded-2xl font-bold font-fun text-lg flex items-center gap-3 transition-all duration-300 ${
+            gameMode === 'stories' 
+              ? 'bg-gradient-to-r from-pink-500 to-pink-700 text-white shadow-game' 
+              : 'bg-white/80 text-gray-700 hover:bg-pink/10 border-2 border-pink-500/20'
+          }`}
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
+        >
+          <ApperIcon name="BookOpen" className="w-6 h-6" />
+          Interactive Stories
+        </motion.button>
       </motion.div>
 
       {/* Stats Bar */}
@@ -1165,6 +1611,272 @@ style={{ width: `${questions?.length ? ((currentQuestion + 1) / questions.length
         <motion.div 
           initial={{ y: 100, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
+transition={{ duration: 0.6, delay: 0.4 }}
+        >
+          <div className="text-center mb-8">
+            <h2 className="text-3xl font-bold font-fun mb-4">🧠 Choose Your Quiz Topic</h2>
+            <p className="text-gray-600 text-lg">Select a skill area to test your knowledge!</p>
+          </div>
+          
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            {quizTopics.map((topic) => (
+              <motion.button
+                key={topic.id}
+                onClick={() => startQuiz(topic.id)}
+                className={`bg-gradient-to-r ${topic.color} text-white rounded-2xl p-6 text-left hover:shadow-lg transition-all duration-300`}
+                whileHover={{ scale: 1.02, y: -5 }}
+                whileTap={{ scale: 0.98 }}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.3, delay: 0.1 }}
+              >
+                <div className="flex items-start gap-4">
+                  <div className="bg-white/20 p-3 rounded-xl">
+                    <ApperIcon name={topic.icon} className="w-8 h-8" />
+                  </div>
+                  <div className="flex-1">
+                    <h3 className="text-xl font-bold font-fun mb-2">{topic.name}</h3>
+                    <p className="text-white/90 text-sm mb-3">{topic.description}</p>
+                    <div className="flex items-center justify-between">
+                      <span className="text-xs bg-white/20 px-2 py-1 rounded-full">
+                        {topic.questions.length} Questions
+                      </span>
+                      <ApperIcon name="ArrowRight" className="w-5 h-5" />
+                    </div>
+                  </div>
+                </div>
+              </motion.button>
+            ))}
+          </div>
+        </motion.div>
+      )}
+
+      {/* Quiz Results */}
+      {showQuizResults && quizResults && (
+        <motion.div 
+          initial={{ y: 100, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          transition={{ duration: 0.6 }}
+          className="game-card p-6 sm:p-8 lg:p-12 mb-8"
+        >
+          <div className="text-center mb-8">
+            <motion.div
+              initial={{ scale: 0 }}
+              animate={{ scale: 1 }}
+              transition={{ duration: 0.5, delay: 0.2 }}
+              className="text-6xl mb-4"
+            >
+              {quizResults.accuracy >= 90 ? '🏆' : quizResults.accuracy >= 70 ? '🌟' : '📚'}
+            </motion.div>
+            <h2 className="text-3xl font-bold font-fun mb-2">Quiz Complete!</h2>
+            <h3 className="text-xl text-gray-600 mb-6">{quizResults.topic}</h3>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+            <div className="text-center p-4 bg-gradient-to-br from-blue-50 to-blue-100 rounded-2xl">
+              <div className="text-3xl font-bold text-blue-600 font-fun">{quizResults.correctAnswers}</div>
+              <div className="text-blue-800 font-medium">Correct Answers</div>
+              <div className="text-sm text-blue-600">out of {quizResults.totalQuestions}</div>
+            </div>
+            
+            <div className="text-center p-4 bg-gradient-to-br from-green-50 to-green-100 rounded-2xl">
+              <div className="text-3xl font-bold text-green-600 font-fun">{quizResults.accuracy}%</div>
+              <div className="text-green-800 font-medium">Accuracy</div>
+              <div className="text-sm text-green-600">
+                {quizResults.accuracy >= 90 ? 'Excellent!' : quizResults.accuracy >= 70 ? 'Good job!' : 'Keep practicing!'}
+              </div>
+            </div>
+            
+            <div className="text-center p-4 bg-gradient-to-br from-purple-50 to-purple-100 rounded-2xl">
+              <div className="text-3xl font-bold text-purple-600 font-fun">{quizResults.totalScore}</div>
+              <div className="text-purple-800 font-medium">Total Points</div>
+              <div className="text-sm text-purple-600">Well earned!</div>
+            </div>
+          </div>
+          
+          <div className="mb-8">
+            <h4 className="text-lg font-bold mb-4 flex items-center gap-2">
+              <ApperIcon name="Target" className="w-5 h-5 text-primary" />
+              Skills Practiced
+            </h4>
+            <div className="flex flex-wrap gap-2">
+              {quizResults.skills.map((skill, index) => (
+                <span 
+                  key={index}
+                  className="bg-gradient-to-r from-secondary/20 to-secondary/30 text-secondary-dark px-3 py-1 rounded-full text-sm font-medium"
+                >
+                  {skill}
+                </span>
+              ))}
+            </div>
+          </div>
+          
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <motion.button
+              onClick={() => startQuiz(currentQuizTopic?.id)}
+              className="game-button text-lg px-8 py-3"
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+            >
+              <div className="flex items-center gap-2">
+                <ApperIcon name="RotateCcw" className="w-5 h-5" />
+                Try Again
+              </div>
+            </motion.button>
+            
+            <motion.button
+              onClick={exitQuiz}
+              className="bg-gradient-to-r from-gray-400 to-gray-600 text-white font-bold py-3 px-8 rounded-2xl shadow-game hover:shadow-lg transform hover:scale-105 active:scale-95 transition-all duration-200 border-2 border-white/20"
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+            >
+              <div className="flex items-center gap-2">
+                <ApperIcon name="Home" className="w-5 h-5" />
+                Back to Home
+              </div>
+            </motion.button>
+          </div>
+        </motion.div>
+      )}
+
+      {/* Story Selection */}
+{/* Story Selection */}
+      {gameMode === 'stories' && !storyMode && !showStoryResults && (
+        <motion.div 
+          initial={{ y: 100, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          transition={{ duration: 0.6, delay: 0.4 }}
+          className="game-card p-6 sm:p-8 lg:p-12 mb-8"
+        >
+          <div className="text-center mb-8">
+            <h2 className="text-3xl font-bold font-fun mb-4">📖 Choose Your Story Adventure</h2>
+            <p className="text-gray-600 text-lg">Select an interactive story to enhance your reading skills!</p>
+          </div>
+          
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            {interactiveStories.map((story) => (
+              <motion.button
+                key={story.id}
+                onClick={() => startStory(story.id)}
+                className={`bg-gradient-to-r ${story.color} text-white rounded-2xl p-6 text-left hover:shadow-lg transition-all duration-300`}
+                whileHover={{ scale: 1.02, y: -5 }}
+                whileTap={{ scale: 0.98 }}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.3, delay: 0.1 }}
+              >
+                <div className="flex items-start gap-4">
+                  <div className="bg-white/20 p-3 rounded-xl">
+                    <ApperIcon name={story.icon} className="w-8 h-8" />
+                  </div>
+                  <div className="flex-1">
+                    <h3 className="text-xl font-bold font-fun mb-2">{story.title}</h3>
+                    <p className="text-white/90 text-sm mb-3">{story.description}</p>
+                    <div className="flex items-center justify-between mb-2">
+                      <span className="text-xs bg-white/20 px-2 py-1 rounded-full">
+                        {story.difficulty}
+                      </span>
+                      <span className="text-xs bg-white/20 px-2 py-1 rounded-full">
+                        {story.estimatedTime}
+                      </span>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-xs text-white/80">
+                        {story.chapters.length} Chapters
+                      </span>
+                      <ApperIcon name="ArrowRight" className="w-5 h-5" />
+                    </div>
+                  </div>
+                </div>
+              </motion.button>
+            ))}
+          </div>
+        </motion.div>
+      )}
+
+      {/* Story Results */}
+      {showStoryResults && storyResults && (
+        <motion.div 
+          initial={{ y: 100, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          transition={{ duration: 0.6 }}
+          className="game-card p-6 sm:p-8 lg:p-12 mb-8"
+        >
+          <div className="text-center mb-8">
+            <motion.div
+              initial={{ scale: 0 }}
+              animate={{ scale: 1 }}
+              transition={{ duration: 0.5, delay: 0.2 }}
+              className="text-6xl mb-4"
+            >
+              {storyResults.accuracy >= 90 ? '📚' : storyResults.accuracy >= 70 ? '🌟' : '📖'}
+            </motion.div>
+            <h2 className="text-3xl font-bold font-fun mb-2">Story Complete!</h2>
+            <h3 className="text-xl text-gray-600 mb-6">{storyResults.storyTitle}</h3>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+            <div className="text-center p-4 bg-gradient-to-br from-blue-50 to-blue-100 rounded-2xl">
+              <div className="text-3xl font-bold text-blue-600 font-fun">{storyResults.chaptersCompleted}</div>
+              <div className="text-blue-800 font-medium">Chapters Read</div>
+              <div className="text-sm text-blue-600">Complete story journey</div>
+            </div>
+            
+            <div className="text-center p-4 bg-gradient-to-br from-green-50 to-green-100 rounded-2xl">
+              <div className="text-3xl font-bold text-green-600 font-fun">{storyResults.accuracy}%</div>
+              <div className="text-green-800 font-medium">Comprehension</div>
+              <div className="text-sm text-green-600">
+                {storyResults.accuracy >= 90 ? 'Excellent!' : storyResults.accuracy >= 70 ? 'Great job!' : 'Keep reading!'}
+              </div>
+            </div>
+            
+            <div className="text-center p-4 bg-gradient-to-br from-purple-50 to-purple-100 rounded-2xl">
+              <div className="text-3xl font-bold text-purple-600 font-fun">{storyResults.comprehensionScore}</div>
+              <div className="text-purple-800 font-medium">Reading Points</div>
+              <div className="text-sm text-purple-600">Well earned!</div>
+            </div>
+          </div>
+          
+          <div className="mb-8">
+            <h4 className="text-lg font-bold mb-4 flex items-center gap-2">
+              <ApperIcon name="BookOpen" className="w-5 h-5 text-primary" />
+              Story Choices Made
+            </h4>
+            <div className="bg-gray-50 rounded-xl p-4">
+              <p className="text-gray-700">
+                You made {storyResults.choices.length} meaningful choices that shaped your story experience.
+                Each choice helped develop critical thinking and reading comprehension skills!
+              </p>
+            </div>
+          </div>
+          
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <motion.button
+              onClick={() => startStory(currentStory?.id)}
+              className="game-button text-lg px-8 py-3"
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+            >
+              <div className="flex items-center gap-2">
+                <ApperIcon name="RotateCcw" className="w-5 h-5" />
+                Read Again
+              </div>
+            </motion.button>
+            
+            <motion.button
+              onClick={exitStory}
+              className="bg-gradient-to-r from-gray-400 to-gray-600 text-white font-bold py-3 px-8 rounded-2xl shadow-game hover:shadow-lg transform hover:scale-105 active:scale-95 transition-all duration-200 border-2 border-white/20"
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+            >
+              <div className="flex items-center gap-2">
+                <ApperIcon name="Home" className="w-5 h-5" />
+                Back to Home
+              </div>
+            </motion.button>
+          </div>
+        </motion.div>
+      )}
           transition={{ duration: 0.6, delay: 0.4 }}
           className="game-card p-6 sm:p-8 lg:p-12 mb-8"
         >
@@ -1298,7 +2010,153 @@ style={{ width: `${questions?.length ? ((currentQuestion + 1) / questions.length
         initial={{ y: 100, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ duration: 0.6, delay: 0.4 }}
-className={`game-card p-6 sm:p-8 lg:p-12 relative overflow-hidden ${(gameMode === 'quiz' && !quizMode) || showQuizResults || !questions?.length ? 'hidden' : ''}`}
+className={`game-card p-6 sm:p-8 lg:p-12 relative overflow-hidden ${(gameMode === 'quiz' && !quizMode) || (gameMode === 'stories' && !storyMode) || showQuizResults || showStoryResults || !questions?.length ? 'hidden' : ''}`}
+{/* Story Mode Interface */}
+      {storyMode && currentStory && (
+        <motion.div 
+          initial={{ y: 100, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          transition={{ duration: 0.6, delay: 0.4 }}
+          className="game-card p-6 sm:p-8 lg:p-12 relative overflow-hidden"
+        >
+          {/* Story Header */}
+          <div className="text-center mb-8">
+            <div className="flex items-center justify-center gap-3 mb-4">
+              <div className="bg-gradient-to-br from-pink-500/20 to-pink-700/20 p-3 rounded-2xl">
+                <ApperIcon name="BookOpen" className="w-8 h-8 text-pink-600" />
+              </div>
+              <h2 className="text-lg sm:text-xl font-bold text-gray-600 font-fun">
+                {currentStory.title} - Chapter {storyProgress.currentChapter + 1}
+              </h2>
+            </div>
+            <h3 className="text-xl font-bold text-pink-600 mb-4">
+              {currentStory.chapters[storyProgress.currentChapter]?.title}
+            </h3>
+          </div>
+
+          {/* Story Content */}
+          <div className="mb-8 story-text">
+            <div className="bg-gradient-to-r from-pink-50 to-purple-50 rounded-2xl p-6 mb-6">
+              <p className="text-gray-800 text-lg leading-relaxed mb-4">
+                {currentStory.chapters[storyProgress.currentChapter]?.content}
+              </p>
+              
+              {/* Character Dialogue */}
+              <div className="character-dialogue bg-white/80 rounded-xl p-4 border-l-4 border-pink-500">
+                <div className="flex items-center gap-2 mb-2">
+                  <div className="w-8 h-8 bg-pink-500 rounded-full flex items-center justify-center">
+                    <span className="text-white font-bold text-sm">
+                      {currentStory.chapters[storyProgress.currentChapter]?.character[0]}
+                    </span>
+                  </div>
+                  <span className="font-bold text-pink-700">
+                    {currentStory.chapters[storyProgress.currentChapter]?.character}
+                  </span>
+                </div>
+                <p className="text-gray-700 italic">
+                  "{currentStory.chapters[storyProgress.currentChapter]?.dialogue}"
+                </p>
+              </div>
+            </div>
+          </div>
+
+          {/* Story Choices */}
+          <div className="mb-8">
+            <h4 className="text-lg font-bold mb-4 text-center">What should happen next?</h4>
+            <div className="grid grid-cols-1 gap-4">
+              {currentStory.chapters[storyProgress.currentChapter]?.choices.map((choice, index) => (
+                <motion.button
+                  key={choice.id}
+                  onClick={() => handleStoryChoice(choice.id)}
+                  className={`story-choice text-left p-4 rounded-xl border-2 transition-all duration-200 ${
+                    selectedChoice === choice.id 
+                      ? 'border-pink-500 bg-pink-50 shadow-soft' 
+                      : 'border-gray-200 bg-white hover:border-pink-300 hover:bg-pink-25'
+                  }`}
+                  disabled={showStoryResult}
+                  initial={{ x: -50, opacity: 0 }}
+                  animate={{ x: 0, opacity: 1 }}
+                  transition={{ duration: 0.3, delay: index * 0.1 }}
+                  whileHover={!showStoryResult ? { scale: 1.02 } : {}}
+                  whileTap={!showStoryResult ? { scale: 0.98 } : {}}
+                >
+                  <div className="flex items-center gap-3">
+                    <div className={`w-8 h-8 rounded-full border-2 flex items-center justify-center font-bold ${
+                      selectedChoice === choice.id 
+                        ? 'bg-pink-500 text-white border-pink-500' 
+                        : 'border-gray-300 text-gray-500'
+                    }`}>
+                      {index + 1}
+                    </div>
+                    <span className="font-fun text-gray-800">{choice.text}</span>
+                  </div>
+                </motion.button>
+              ))}
+            </div>
+          </div>
+
+          {/* Story Question */}
+          {currentStory.chapters[storyProgress.currentChapter]?.question && (
+            <div className="mb-8 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-2xl p-6">
+              <h4 className="text-lg font-bold mb-4 text-center text-blue-800">
+                Reading Comprehension Question
+              </h4>
+              <p className="text-gray-800 font-medium mb-4 text-center">
+                {currentStory.chapters[storyProgress.currentChapter].question.text}
+              </p>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                {currentStory.chapters[storyProgress.currentChapter].question.options.map((option, index) => (
+                  <motion.button
+                    key={index}
+                    onClick={() => handleStoryQuestionSubmit(index)}
+                    className="question-option text-center p-3 rounded-xl bg-white border-2 border-blue-200 hover:border-blue-400 hover:bg-blue-50 transition-all duration-200"
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
+                  >
+                    <span className="font-fun text-gray-800">{option}</span>
+                  </motion.button>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Continue Button */}
+          <div className="text-center">
+            <motion.button
+              onClick={handleStorySubmit}
+              disabled={!selectedChoice || showStoryResult}
+              className={`game-button text-xl px-8 py-4 ${
+                !selectedChoice || showStoryResult 
+                  ? 'opacity-50 cursor-not-allowed' 
+                  : 'hover:shadow-lg'
+              }`}
+              whileHover={selectedChoice && !showStoryResult ? { scale: 1.05 } : {}}
+              whileTap={selectedChoice && !showStoryResult ? { scale: 0.95 } : {}}
+            >
+              {showStoryResult ? 'Continuing story...' : 'Continue Story'}
+            </motion.button>
+          </div>
+
+          {/* Progress Indicator */}
+          <div className="mt-6 story-progress">
+            <div className="flex justify-center items-center gap-2">
+              {currentStory.chapters.map((_, index) => (
+                <div
+                  key={index}
+                  className={`w-3 h-3 rounded-full ${
+                    index <= storyProgress.currentChapter 
+                      ? 'bg-pink-500' 
+                      : 'bg-gray-300'
+                  }`}
+                />
+              ))}
+            </div>
+            <p className="text-center text-sm text-gray-500 mt-2">
+              Chapter {storyProgress.currentChapter + 1} of {currentStory.chapters.length}
+            </p>
+          </div>
+        </motion.div>
+      )}
       >
         {/* Background decoration */}
         <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-bl from-primary/10 to-transparent rounded-full -translate-y-16 translate-x-16"></div>
