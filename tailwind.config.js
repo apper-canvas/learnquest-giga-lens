@@ -54,7 +54,11 @@ export default {
         'pulse-slow': 'pulse 3s infinite',
         'wiggle': 'wiggle 1s ease-in-out infinite',
         'float': 'float 3s ease-in-out infinite',
-        'sparkle': 'sparkle 1.5s ease-in-out infinite'
+'sparkle': 'sparkle 1.5s ease-in-out infinite',
+'spin-slow': 'spin 3s linear infinite',
+        'bounce-gentle': 'bounce-gentle 2s ease-in-out infinite',
+        'glow': 'glow 2s ease-in-out infinite alternate',
+        'flip': 'flip 0.6s ease-in-out'
       },
       keyframes: {
         wiggle: {
@@ -68,6 +72,19 @@ export default {
         sparkle: {
           '0%, 100%': { opacity: '0', transform: 'scale(0.8)' },
           '50%': { opacity: '1', transform: 'scale(1.2)' }
+        }
+'bounce-gentle': {
+          '0%, 100%': { transform: 'translateY(0)', animationTimingFunction: 'cubic-bezier(0,0,0.2,1)' },
+          '50%': { transform: 'translateY(-5px)', animationTimingFunction: 'cubic-bezier(0.8,0,1,1)' }
+        },
+        glow: {
+          '0%': { boxShadow: '0 0 5px rgba(255, 107, 157, 0.5)' },
+          '100%': { boxShadow: '0 0 20px rgba(255, 107, 157, 0.8), 0 0 30px rgba(255, 107, 157, 0.6)' }
+        },
+        flip: {
+          '0%': { transform: 'rotateY(0)' },
+          '50%': { transform: 'rotateY(-90deg)' },
+          '100%': { transform: 'rotateY(0)' }
         }
       }
     }
