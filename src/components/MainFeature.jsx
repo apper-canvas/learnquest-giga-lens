@@ -1015,7 +1015,7 @@ const switchMode = (mode) => {
     setCurrentQuizTopic(null)
     setShowQuizResults(false)
     resetGame()
-const modeText = mode === 'math' ? 'Math' : mode === 'reading' ? 'Reading' : mode === 'quiz' ? 'Quiz' : 'Stories'
+const modeText = mode === 'math' ? 'Math' : mode === 'reading' ? 'Reading' : mode === 'quiz' ? 'Quiz' : mode === 'stories' ? 'Stories' : 'Unknown'
     toast.info(`Switched to ${modeText} Quest! 📚`, {
       position: "top-center",
       autoClose: 2000,
