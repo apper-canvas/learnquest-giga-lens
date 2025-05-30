@@ -18,6 +18,16 @@ export default {
           dark: '#3BB5AE'
         },
         accent: '#FFD93D',
+offline: {
+          DEFAULT: '#EF4444',
+          light: '#FCA5A5',
+          dark: '#DC2626'
+        },
+        online: {
+          DEFAULT: '#10B981',
+          light: '#6EE7B7', 
+          dark: '#059669'
+        },
         surface: {
           50: '#f8fafc',
           100: '#f1f5f9',

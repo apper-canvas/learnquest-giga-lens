@@ -2,7 +2,21 @@ import MainFeature from '../components/MainFeature'
 import ApperIcon from '../components/ApperIcon'
 import { motion } from 'framer-motion'
 
+import { useState, useEffect } from 'react'
+import { Link } from 'react-router-dom'
 const Home = () => {
+const [isOnline, setIsOnline] = useState(navigator.onLine)
+
+  useEffect(() => {
+    const handleConnectionChange = () => setIsOnline(navigator.onLine)
+    window.addEventListener('online', handleConnectionChange)
+    window.addEventListener('offline', handleConnectionChange)
+    return () => {
+      window.removeEventListener('online', handleConnectionChange)
+      window.removeEventListener('offline', handleConnectionChange)
+    }
+  }, [])
+
   return (
     <div className="min-h-screen">
       {/* Header */}
@@ -34,6 +48,13 @@ const Home = () => {
             </motion.div>
             
             <div className="flex items-center gap-3 sm:gap-4">
+<Link 
+                to="/dashboard"
+                className="bg-white/20 backdrop-blur-sm px-4 py-2 rounded-full flex items-center gap-2 hover:bg-white/30 transition-all duration-200"
+              >
+                <ApperIcon name="BarChart3" className="w-5 h-5 text-accent" />
+                <span className="font-bold text-sm sm:text-base">Dashboard</span>
+              </Link>
               <motion.div 
                 className="bg-white/20 backdrop-blur-sm px-4 py-2 rounded-full flex items-center gap-2"
                 whileHover={{ scale: 1.05 }}

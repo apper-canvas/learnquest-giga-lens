@@ -3,6 +3,34 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { toast } from 'react-toastify'
 import ApperIcon from './ApperIcon'
 
+// Offline Data Management
+const OFFLINE_STORAGE_KEY = 'learnquest_offline_data'
+const PROGRESS_STORAGE_KEY = 'learnquest_progress'
+
+const getOfflineData = () => {
+  const stored = localStorage.getItem(OFFLINE_STORAGE_KEY)
+  return stored ? JSON.parse(stored) : null
+}
+
+const saveOfflineProgress = (progressData) => {
+  localStorage.setItem(PROGRESS_STORAGE_KEY, JSON.stringify({
+    ...progressData,
+    lastUpdated: new Date().toISOString()
+  }))
+}
+
+const getOfflineProgress = () => {
+  const stored = localStorage.getItem(PROGRESS_STORAGE_KEY)
+  return stored ? JSON.parse(stored) : {
+    score: 0,
+    streak: 0,
+    hearts: 3,
+    currentQuestion: 0,
+    completedQuizzes: [],
+    achievements: [],
+    lastUpdated: new Date().toISOString()
+  }
+}
 const MainFeature = () => {
   const [currentQuestion, setCurrentQuestion] = useState(0)
   const [selectedAnswer, setSelectedAnswer] = useState(null)
@@ -20,6 +48,59 @@ const [quizMode, setQuizMode] = useState(false)
   const [quizResults, setQuizResults] = useState(null)
   const [showQuizResults, setShowQuizResults] = useState(false)
 
+const [isOnline, setIsOnline] = useState(navigator.onLine)
+  const [offlineMode, setOfflineMode] = useState(false)
+
+  // Load offline progress on component mount
+  useEffect(() => {
+    const offlineProgress = getOfflineProgress()
+    if (offlineProgress) {
+      setScore(offlineProgress.score || 0)
+      setStreak(offlineProgress.streak || 0)
+      setHearts(offlineProgress.hearts || 3)
+      setCurrentQuestion(offlineProgress.currentQuestion || 0)
+    }
+
+    const handleConnectionChange = () => {
+      const online = navigator.onLine
+      setIsOnline(online)
+      if (!online) {
+        setOfflineMode(true)
+        toast.info('📱 Offline mode activated! Your progress will be saved locally.', {
+          position: "top-center",
+          autoClose: 3000,
+        })
+      } else if (offlineMode) {
+        toast.success('🌐 Back online! Your offline progress has been preserved.', {
+          position: "top-center",
+          autoClose: 3000,
+        })
+        setOfflineMode(false)
+      }
+    }
+
+    window.addEventListener('online', handleConnectionChange)
+    window.addEventListener('offline', handleConnectionChange)
+
+    return () => {
+      window.removeEventListener('online', handleConnectionChange)
+      window.removeEventListener('offline', handleConnectionChange)
+    }
+  }, [offlineMode])
+
+  // Save progress whenever key state changes
+  useEffect(() => {
+    const progressData = {
+      score,
+      streak,
+      hearts,
+      currentQuestion,
+      gameMode,
+      quizMode,
+      currentQuizTopic: currentQuizTopic?.id || null
+    }
+    saveOfflineProgress(progressData)
+  }, [score, streak, hearts, currentQuestion, gameMode, quizMode, currentQuizTopic])
 // Static question data
   const mathQuestions = [
     {

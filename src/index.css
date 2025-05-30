@@ -53,6 +53,26 @@
     @apply animate-sparkle;
   }
 }
+/* Offline Mode Styles */
+  .offline-indicator {
+    @apply bg-offline text-white px-3 py-1 rounded-full text-sm font-medium flex items-center gap-2;
+  }
+  
+  .online-indicator {
+    @apply bg-online text-white px-3 py-1 rounded-full text-sm font-medium flex items-center gap-2;
+  }
+  
+  .sync-indicator {
+    @apply bg-yellow-500 text-white px-3 py-1 rounded-full text-sm font-medium flex items-center gap-2 animate-pulse;
+  }
+  
+  .offline-button {
+    @apply bg-gray-400 text-white font-bold py-3 px-6 rounded-2xl shadow-soft cursor-not-allowed opacity-75;
+  }
+  
+  .offline-content {
+    @apply border-2 border-dashed border-gray-300 bg-gray-50 rounded-xl p-4;
+  }
 
 @layer utilities {
   .text-shadow {
