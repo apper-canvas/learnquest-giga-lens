@@ -1881,7 +1881,7 @@ transition={{ duration: 0.6, delay: 0.4 }}
         initial={{ y: 100, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ duration: 0.6, delay: 0.4 }}
-className={`game-card p-6 sm:p-8 lg:p-12 relative overflow-hidden ${(gameMode === 'quiz' && !quizMode) || (gameMode === 'stories' && !storyMode) || showQuizResults || showStoryResults || !questions?.length ? 'hidden' : ''}`}
+className={`game-card p-6 sm:p-8 lg:p-12 relative overflow-hidden ${(gameMode === 'quiz' && !quizMode) || (gameMode === 'stories' && !storyMode) || showQuizResults || showStoryResults || !questions?.length || gameMode === 'stories' ? 'hidden' : ''}`}
       >
 {/* Story Mode Interface */}
 {storyMode && currentStory && gameMode === 'stories' && (
