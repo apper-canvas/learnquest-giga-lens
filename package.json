@@ -23,6 +23,7 @@
     "@reduxjs/toolkit": "2.7.0"
   },
 "devDependencies": {
+  "devDependencies": {
     "vite-plugin-pwa": "^0.17.0",
     "@types/react": "^18.2.15",
     "@types/react-dom": "^18.2.7",

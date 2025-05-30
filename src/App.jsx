@@ -25,7 +25,7 @@ const initializeOfflineData = () => {
       math: [],
       reading: [],
       quiz: {}
-stories: []
+stories: [],
     },
     lastSync: new Date().toISOString(),
     offlineActions: []
@@ -41,6 +41,7 @@ stories: []
 const saveOfflineData = (data) => {
   localStorage.setItem(OFFLINE_STORAGE_KEY, JSON.stringify(data))
 }
+
 function App() {
 const [isOnline, setIsOnline] = useState(navigator.onLine)
   const [offlineData, setOfflineData] = useState(() => initializeOfflineData())

@@ -18,7 +18,8 @@ export default {
           dark: '#3BB5AE'
         },
         accent: '#FFD93D',
-offline: {
+accent: '#FFD93D',
+        offline: {
           DEFAULT: '#EF4444',
           light: '#FCA5A5',
           dark: '#DC2626'
@@ -65,6 +66,7 @@ offline: {
         'wiggle': 'wiggle 1s ease-in-out infinite',
         'float': 'float 3s ease-in-out infinite',
 'sparkle': 'sparkle 1.5s ease-in-out infinite',
+        'spin-slow': 'spin 3s linear infinite',
 'spin-slow': 'spin 3s linear infinite',
         'bounce-gentle': 'bounce-gentle 2s ease-in-out infinite',
         'glow': 'glow 2s ease-in-out infinite alternate',
