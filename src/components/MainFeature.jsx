@@ -752,6 +752,20 @@ const [showMiniGameLauncher, setShowMiniGameLauncher] = useState(false)
             </div>
           </div>
         </div>
+{/* Mini-Game Launcher in Stats */}
+        <div className="mt-6 text-center">
+          <motion.button
+            onClick={() => setShowMiniGameLauncher(true)}
+            className="bg-gradient-to-r from-accent to-yellow-400 text-gray-800 font-bold py-3 px-6 rounded-2xl shadow-achievement hover:shadow-lg transform hover:scale-105 active:scale-95 transition-all duration-200 border-2 border-white/20"
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+          >
+            <div className="flex items-center gap-2">
+              <ApperIcon name="Gamepad2" className="w-5 h-5" />
+              <span className="font-fun">Mini-Games</span>
+            </div>
+          </motion.button>
+        </div>
       </motion.div>
 
       {/* Main Game Area */}
