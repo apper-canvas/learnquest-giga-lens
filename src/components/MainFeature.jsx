@@ -684,11 +684,11 @@ useEffect(() => {
       return () => clearInterval(timer)
     }, [])
 
-    useEffect(() => {
+useEffect(() => {
       if (timeLeft === 0) {
         completeMiniGame(correct * 5)
       }
-    }, [timeLeft, correct, completeMiniGame])
+    }, [timeLeft])
 
     const generateProblem = () => {
       const a = Math.floor(Math.random() * 10) + 1
@@ -752,7 +752,7 @@ const generateSequence = () => {
 
 useEffect(() => {
       generateSequence()
-    }, [level, generateSequence])
+    }, [level])
 
 
     const handleColorClick = (color) => {
@@ -875,11 +875,11 @@ useEffect(() => {
       return () => clearInterval(timer)
     }, [])
 
-    useEffect(() => {
+useEffect(() => {
       if (timeLeft === 0) {
         completeMiniGame(25 + score * 3)
       }
-    }, [timeLeft, score, completeMiniGame])
+    }, [timeLeft])
 
     const generateColors = () => {
       const colors = [
@@ -1039,11 +1039,11 @@ useEffect(() => {
             <div className="progress-bar">
               <div 
                 className="progress-fill" 
-                style={{ width: `${((currentQuestion + 1) / questions.length) * 100}%` }}
+style={{ width: `${questions?.length ? ((currentQuestion + 1) / questions.length) * 100 : 0}%` }}
               ></div>
             </div>
 <div className="text-sm text-gray-500 mt-1">
-{quizMode ? `Question ${currentQuestion + 1} of ${questions.length}` : `${currentQuestion + 1} / ${questions.length}`}
+{questions?.length ? (quizMode ? `Question ${currentQuestion + 1} of ${questions.length}` : `${currentQuestion + 1} / ${questions.length}`) : 'Loading...'}
             </div>
           </div>
         </div>
@@ -1201,7 +1201,7 @@ useEffect(() => {
         initial={{ y: 100, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ duration: 0.6, delay: 0.4 }}
-className={`game-card p-6 sm:p-8 lg:p-12 relative overflow-hidden ${(gameMode === 'quiz' && !quizMode) || showQuizResults ? 'hidden' : ''}`}
+className={`game-card p-6 sm:p-8 lg:p-12 relative overflow-hidden ${(gameMode === 'quiz' && !quizMode) || showQuizResults || !questions?.length ? 'hidden' : ''}`}
       >
         {/* Background decoration */}
         <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-bl from-primary/10 to-transparent rounded-full -translate-y-16 translate-x-16"></div>
@@ -1232,22 +1232,21 @@ className={`game-card p-6 sm:p-8 lg:p-12 relative overflow-hidden ${(gameMode ==
           </div>
           
           <h3 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-800 mb-6 font-fun leading-tight">
-            {questions[currentQuestion].question}
+{questions?.[currentQuestion]?.question || 'Loading question...'}
           </h3>
         </motion.div>
 
         {/* Answer Options */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6 mb-8">
-          {questions[currentQuestion].options.map((option, index) => (
+{questions?.[currentQuestion]?.options?.map((option, index) => (
             <motion.button
               key={index}
               onClick={() => handleAnswerSelect(index)}
               className={`question-option text-left font-medium text-lg sm:text-xl p-4 sm:p-6 ${
                 selectedAnswer === index ? 'selected' : ''
               } ${
-                showResult && index === questions[currentQuestion].correct ? 'correct' : ''
-              } ${
-                showResult && selectedAnswer === index && index !== questions[currentQuestion].correct ? 'incorrect' : ''
+showResult && index === questions?.[currentQuestion]?.correct ? 'correct' : ''
+showResult && selectedAnswer === index && index !== questions?.[currentQuestion]?.correct ? 'incorrect' : ''
               }`}
               disabled={showResult}
               initial={{ x: -50, opacity: 0 }}
