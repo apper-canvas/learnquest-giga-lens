@@ -1,0 +1,107 @@
+@import 'tailwindcss/base';
+@import 'tailwindcss/components';
+@import 'tailwindcss/utilities';
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  
+  body {
+    @apply bg-background text-foreground font-sans;
+  }
+  
+  html {
+    @apply scroll-smooth;
+  }
+}
+
+@layer components {
+  .game-button {
+    @apply bg-gradient-to-r from-primary to-primary-light text-white font-bold py-3 px-6 rounded-2xl shadow-game hover:shadow-lg transform hover:scale-105 active:scale-95 transition-all duration-200 border-2 border-white/20;
+  }
+  
+  .game-card {
+    @apply bg-white/80 backdrop-blur-sm rounded-2xl shadow-card hover:shadow-lg transition-all duration-300 border border-white/40;
+  }
+  
+  .achievement-badge {
+    @apply bg-gradient-to-br from-accent to-yellow-400 text-gray-800 font-bold rounded-full shadow-achievement;
+  }
+  
+  .question-option {
+    @apply bg-white/90 border-2 border-gray-200 rounded-xl p-4 cursor-pointer hover:border-primary hover:bg-primary/5 transition-all duration-200 transform hover:scale-105;
+  }
+  
+  .question-option.selected {
+    @apply border-primary bg-primary/10 shadow-soft;
+  }
+  
+  .question-option.correct {
+    @apply border-green-400 bg-green-50 animate-pulse-slow;
+  }
+  
+  .question-option.incorrect {
+    @apply border-red-400 bg-red-50;
+  }
+  
+  .progress-bar {
+    @apply w-full bg-gray-200 rounded-full h-3 overflow-hidden;
+  }
+  
+  .progress-fill {
+    @apply h-full bg-gradient-to-r from-secondary to-secondary-light rounded-full transition-all duration-500 ease-out;
+  }
+  
+  .floating-element {
+    @apply animate-float;
+  }
+  
+  .sparkle-effect {
+    @apply animate-sparkle;
+  }
+}
+
+@layer utilities {
+  .text-shadow {
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+  }
+  
+  .text-shadow-lg {
+    text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.2);
+  }
+  
+  .bg-pattern {
+    background-image: radial-gradient(circle at 1px 1px, rgba(255, 255, 255, 0.8) 1px, transparent 0);
+    background-size: 20px 20px;
+  }
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(to bottom, #FF6B9D, #4ECDC4);
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(to bottom, #E5527A, #3BB5AE);
+}
+
+/* Toast customization */
+.Toastify__toast {
+  font-family: 'Fredoka', sans-serif;
+  border-radius: 12px;
+}
+
+.Toastify__progress-bar {
+  background: linear-gradient(to right, #FF6B9D, #4ECDC4);
+}
