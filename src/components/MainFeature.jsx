@@ -224,7 +224,7 @@ const [showMiniGameLauncher, setShowMiniGameLauncher] = useState(false)
     const [matched, setMatched] = useState([])
     const [moves, setMoves] = useState(0)
 
-    useEffect(() => {
+useEffect(() => {
       const symbols = ['🌟', '🎯', '🚀', '🎨', '🎪', '⚡']
       const gameCards = [...symbols, ...symbols]
         .sort(() => Math.random() - 0.5)
@@ -286,19 +286,24 @@ const [showMiniGameLauncher, setShowMiniGameLauncher] = useState(false)
     const [timeLeft, setTimeLeft] = useState(30)
     const [correct, setCorrect] = useState(0)
 
-    useEffect(() => {
+useEffect(() => {
       generateProblem()
       const timer = setInterval(() => {
         setTimeLeft(prev => {
           if (prev <= 1) {
-            completeMiniGame(correct * 5)
             return 0
           }
           return prev - 1
         })
       }, 1000)
       return () => clearInterval(timer)
-    }, [correct])
+    }, [])
+
+    useEffect(() => {
+      if (timeLeft === 0) {
+        completeMiniGame(correct * 5)
+      }
+    }, [timeLeft, correct, completeMiniGame])
 
     const generateProblem = () => {
       const a = Math.floor(Math.random() * 10) + 1
@@ -349,11 +354,7 @@ const [showMiniGameLauncher, setShowMiniGameLauncher] = useState(false)
     const [showSequence, setShowSequence] = useState(true)
     const [level, setLevel] = useState(1)
 
-    useEffect(() => {
-      generateSequence()
-    }, [level])
-
-    const generateSequence = () => {
+const generateSequence = () => {
       const colors = ['red', 'blue', 'green', 'yellow']
       const newSequence = Array.from({ length: level + 2 }, () => 
         colors[Math.floor(Math.random() * colors.length)]
@@ -363,6 +364,11 @@ const [showMiniGameLauncher, setShowMiniGameLauncher] = useState(false)
       setShowSequence(true)
       setTimeout(() => setShowSequence(false), (level + 2) * 800)
     }
+
+    useEffect(() => {
+      generateSequence()
+    }, [level])
+
 
     const handleColorClick = (color) => {
       if (showSequence) return
@@ -471,19 +477,24 @@ const [showMiniGameLauncher, setShowMiniGameLauncher] = useState(false)
     const [score, setGameScore] = useState(0)
     const [timeLeft, setTimeLeft] = useState(20)
 
-    useEffect(() => {
+useEffect(() => {
       generateColors()
       const timer = setInterval(() => {
         setTimeLeft(prev => {
           if (prev <= 1) {
-            completeMiniGame(25 + score * 3)
             return 0
           }
           return prev - 1
         })
       }, 1000)
       return () => clearInterval(timer)
-    }, [score])
+    }, [])
+
+    useEffect(() => {
+      if (timeLeft === 0) {
+        completeMiniGame(25 + score * 3)
+      }
+    }, [timeLeft, score, completeMiniGame])
 
     const generateColors = () => {
       const colors = [
