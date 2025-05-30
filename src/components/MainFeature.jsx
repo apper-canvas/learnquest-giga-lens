@@ -544,120 +544,6 @@ const [showMiniGameLauncher, setShowMiniGameLauncher] = useState(false)
     }
   }
 
-{/* Mini-Game Launcher Button */}
-      {(currentQuestion > 0 && currentQuestion % 2 === 0) && (
-        <motion.div
-          initial={{ scale: 0, opacity: 0 }}
-          animate={{ scale: 1, opacity: 1 }}
-          className="fixed bottom-20 left-4 sm:bottom-24 sm:left-6 z-20"
-        >
-          <motion.button
-            onClick={() => setShowMiniGameLauncher(true)}
-            className="bg-gradient-to-r from-accent to-yellow-400 text-gray-800 font-bold py-3 px-4 rounded-2xl shadow-achievement animate-bounce-gentle"
-            whileHover={{ scale: 1.1 }}
-            whileTap={{ scale: 0.9 }}
-          >
-            <div className="flex items-center gap-2">
-              <ApperIcon name="Gamepad2" className="w-5 h-5" />
-              <span className="text-sm font-fun">Brain Break!</span>
-            </div>
-          </motion.button>
-        </motion.div>
-      )}
-
-      {/* Mini-Game Launcher Modal */}
-      <AnimatePresence>
-        {showMiniGameLauncher && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4"
-            onClick={() => setShowMiniGameLauncher(false)}
-          >
-            <motion.div
-              initial={{ scale: 0.8, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0.8, opacity: 0 }}
-              className="bg-white rounded-3xl p-6 max-w-md w-full max-h-[80vh] overflow-y-auto"
-              onClick={(e) => e.stopPropagation()}
-            >
-              <div className="text-center mb-6">
-                <h2 className="text-2xl font-bold font-fun mb-2">🎮 Mini-Game Launcher</h2>
-                <p className="text-gray-600">Choose a fun brain break activity!</p>
-              </div>
-              
-              <div className="grid gap-3">
-                {miniGames.map((game) => (
-                  <motion.button
-                    key={game.id}
-                    onClick={() => launchMiniGame(game.id)}
-                    className={`bg-gradient-to-r ${game.color} text-white rounded-2xl p-4 text-left`}
-                    whileHover={{ scale: 1.02 }}
-                    whileTap={{ scale: 0.98 }}
-                  >
-                    <div className="flex items-center gap-3">
-                      <div className="bg-white/20 p-2 rounded-xl">
-                        <ApperIcon name={game.icon} className="w-6 h-6" />
-                      </div>
-                      <div className="flex-1">
-                        <div className="font-bold font-fun">{game.name}</div>
-                        <div className="text-sm opacity-90">{game.description}</div>
-                      </div>
-                      <div className="text-right">
-                        <div className="text-xs opacity-75">Up to</div>
-                        <div className="font-bold">{game.points}pts</div>
-                      </div>
-                    </div>
-                  </motion.button>
-                ))}
-              </div>
-              
-              <motion.button
-                onClick={() => setShowMiniGameLauncher(false)}
-                className="w-full mt-4 bg-gray-200 text-gray-700 font-bold py-3 rounded-2xl"
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
-              >
-                Maybe Later
-              </motion.button>
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-
-      {/* Mini-Game Modal */}
-      <AnimatePresence>
-        {currentMiniGame && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4"
-          >
-            <motion.div
-              initial={{ scale: 0.8, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0.8, opacity: 0 }}
-              className="bg-white rounded-3xl p-6 max-w-lg w-full max-h-[80vh] overflow-y-auto"
-            >
-              <div className="flex justify-between items-center mb-6">
-                <h2 className="text-xl font-bold font-fun">Mini-Game</h2>
-                <motion.button
-                  onClick={closeMiniGame}
-                  className="bg-gray-200 text-gray-600 rounded-full p-2"
-                  whileHover={{ scale: 1.1 }}
-                  whileTap={{ scale: 0.9 }}
-                >
-                  <ApperIcon name="X" className="w-5 h-5" />
-                </motion.button>
-              </div>
-              
-              {renderCurrentMiniGame()}
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
       {/* Game Mode Selector */}
@@ -919,6 +805,120 @@ const [showMiniGameLauncher, setShowMiniGameLauncher] = useState(false)
         >
           {streak > 2 ? '🤩' : streak > 0 ? '😊' : '🙂'}
         </motion.div>
+{/* Mini-Game Launcher Button */}
+      {(currentQuestion > 0 && currentQuestion % 2 === 0) && (
+        <motion.div
+          initial={{ scale: 0, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          className="fixed bottom-20 left-4 sm:bottom-24 sm:left-6 z-20"
+        >
+          <motion.button
+            onClick={() => setShowMiniGameLauncher(true)}
+            className="bg-gradient-to-r from-accent to-yellow-400 text-gray-800 font-bold py-3 px-4 rounded-2xl shadow-achievement animate-bounce-gentle"
+            whileHover={{ scale: 1.1 }}
+            whileTap={{ scale: 0.9 }}
+          >
+            <div className="flex items-center gap-2">
+              <ApperIcon name="Gamepad2" className="w-5 h-5" />
+              <span className="text-sm font-fun">Brain Break!</span>
+            </div>
+          </motion.button>
+        </motion.div>
+      )}
+
+      {/* Mini-Game Launcher Modal */}
+      <AnimatePresence>
+        {showMiniGameLauncher && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4"
+            onClick={() => setShowMiniGameLauncher(false)}
+          >
+            <motion.div
+              initial={{ scale: 0.8, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.8, opacity: 0 }}
+              className="bg-white rounded-3xl p-6 max-w-md w-full max-h-[80vh] overflow-y-auto"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="text-center mb-6">
+                <h2 className="text-2xl font-bold font-fun mb-2">🎮 Mini-Game Launcher</h2>
+                <p className="text-gray-600">Choose a fun brain break activity!</p>
+              </div>
+              
+              <div className="grid gap-3">
+                {miniGames.map((game) => (
+                  <motion.button
+                    key={game.id}
+                    onClick={() => launchMiniGame(game.id)}
+                    className={`bg-gradient-to-r ${game.color} text-white rounded-2xl p-4 text-left`}
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
+                  >
+                    <div className="flex items-center gap-3">
+                      <div className="bg-white/20 p-2 rounded-xl">
+                        <ApperIcon name={game.icon} className="w-6 h-6" />
+                      </div>
+                      <div className="flex-1">
+                        <div className="font-bold font-fun">{game.name}</div>
+                        <div className="text-sm opacity-90">{game.description}</div>
+                      </div>
+                      <div className="text-right">
+                        <div className="text-xs opacity-75">Up to</div>
+                        <div className="font-bold">{game.points}pts</div>
+                      </div>
+                    </div>
+                  </motion.button>
+                ))}
+              </div>
+              
+              <motion.button
+                onClick={() => setShowMiniGameLauncher(false)}
+                className="w-full mt-4 bg-gray-200 text-gray-700 font-bold py-3 rounded-2xl"
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+              >
+                Maybe Later
+              </motion.button>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Mini-Game Modal */}
+      <AnimatePresence>
+        {currentMiniGame && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4"
+          >
+            <motion.div
+              initial={{ scale: 0.8, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.8, opacity: 0 }}
+              className="bg-white rounded-3xl p-6 max-w-lg w-full max-h-[80vh] overflow-y-auto"
+            >
+              <div className="flex justify-between items-center mb-6">
+                <h2 className="text-xl font-bold font-fun">Mini-Game</h2>
+                <motion.button
+                  onClick={closeMiniGame}
+                  className="bg-gray-200 text-gray-600 rounded-full p-2"
+                  whileHover={{ scale: 1.1 }}
+                  whileTap={{ scale: 0.9 }}
+                >
+                  <ApperIcon name="X" className="w-5 h-5" />
+                </motion.button>
+              </div>
+              
+              {renderCurrentMiniGame()}
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
       </motion.div>
     </div>
   )
