@@ -1,3 +1,4 @@
+import { useState, useEffect } from 'react'
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 import { ToastContainer } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
@@ -7,7 +8,6 @@ import NotFound from './pages/NotFound'
 
 import { toast } from 'react-toastify'
 import ApperIcon from './components/ApperIcon'
-import { useState, useEffect } from 'react'
 
 // Offline Data Management
 const OFFLINE_STORAGE_KEY = 'learnquest_offline_data'
@@ -24,8 +24,8 @@ const initializeOfflineData = () => {
     questionsCache: {
       math: [],
       reading: [],
-      quiz: {}
-stories: [],
+quiz: {},
+      stories: [],
     },
     lastSync: new Date().toISOString(),
     offlineActions: []
