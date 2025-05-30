@@ -9,12 +9,16 @@ const MainFeature = () => {
   const [showResult, setShowResult] = useState(false)
   const [score, setScore] = useState(0)
   const [streak, setStreak] = useState(0)
-  const [gameMode, setGameMode] = useState('math') // 'math' or 'reading'
+const [gameMode, setGameMode] = useState('math') // 'math', 'reading', or 'quiz'
   const [difficulty, setDifficulty] = useState(1)
   const [hearts, setHearts] = useState(3)
   const [showCelebration, setShowCelebration] = useState(false)
 const [showMiniGameLauncher, setShowMiniGameLauncher] = useState(false)
   const [currentMiniGame, setCurrentMiniGame] = useState(null)
+const [quizMode, setQuizMode] = useState(false)
+  const [currentQuizTopic, setCurrentQuizTopic] = useState(null)
+  const [quizResults, setQuizResults] = useState(null)
+  const [showQuizResults, setShowQuizResults] = useState(false)
 
   const mathQuestions = [
     {
@@ -86,7 +90,7 @@ const [showMiniGameLauncher, setShowMiniGameLauncher] = useState(false)
     }
   ]
 
-  const questions = gameMode === 'math' ? mathQuestions : readingQuestions
+const questions = quizMode ? getCurrentQuizQuestions() : (gameMode === 'math' ? mathQuestions : readingQuestions)
 
   const handleAnswerSelect = (answerIndex) => {
     if (showResult) return
@@ -128,13 +132,17 @@ const [showMiniGameLauncher, setShowMiniGameLauncher] = useState(false)
         setSelectedAnswer(null)
         setShowResult(false)
       } else {
-        // Game completed
-        toast.success(`Game Complete! Final Score: ${score}! 🎉`, {
-          position: "top-center",
-          autoClose: 3000,
-        })
-        resetGame()
-      }
+// Game/Quiz completed
+if (quizMode) {
+          handleQuizComplete()
+        } else {
+          toast.success(`Game Complete! Final Score: ${score}! 🎉`, {
+            position: "top-center",
+            autoClose: 3000,
+          })
+          resetGame()
+        }
+}
     }, 2000)
   }
 
@@ -155,6 +163,356 @@ const [showMiniGameLauncher, setShowMiniGameLauncher] = useState(false)
       autoClose: 2000,
     })
   }
+// Quiz management functions
+  const startQuiz = (topicId) => {
+    const topic = quizTopics.find(t => t.id === topicId)
+    if (topic) {
+      setCurrentQuizTopic(topic)
+      setCurrentQuestion(0)
+      setSelectedAnswer(null)
+      setShowResult(false)
+      setScore(0)
+      setStreak(0)
+      setHearts(3)
+      setQuizMode(true)
+      setShowQuizResults(false)
+      toast.info(`Starting ${topic.name} Quiz! 📚`, {
+        position: "top-center",
+        autoClose: 2000,
+      })
+    }
+  }
+
+  const getCurrentQuizQuestions = () => {
+    return currentQuizTopic ? currentQuizTopic.questions : []
+  }
+
+  const handleQuizComplete = () => {
+    const quizQuestions = getCurrentQuizQuestions()
+    const totalQuestions = quizQuestions.length
+    const accuracy = Math.round((score / (totalQuestions * 15)) * 100) // Assuming average 15 points per question
+    
+    const results = {
+      topic: currentQuizTopic.name,
+      totalQuestions,
+      correctAnswers: Math.floor(score / 15), // Approximate correct answers
+      accuracy,
+      totalScore: score,
+      skills: [...new Set(quizQuestions.map(q => q.skill))],
+      timeSpent: Date.now() // Simple timestamp for now
+    }
+    
+    setQuizResults(results)
+    setShowQuizResults(true)
+    setQuizMode(false)
+    
+    // Achievement toasts based on performance
+    if (accuracy >= 90) {
+      toast.success(`🏆 Perfect! You mastered ${currentQuizTopic.name}!`, {
+        position: "top-center",
+        autoClose: 3000,
+      })
+    } else if (accuracy >= 70) {
+      toast.success(`🌟 Great job! ${accuracy}% accuracy in ${currentQuizTopic.name}!`, {
+        position: "top-center",
+        autoClose: 3000,
+      })
+    } else {
+      toast.info(`📚 Keep practicing ${currentQuizTopic.name}! You're improving!`, {
+        position: "top-center",
+        autoClose: 3000,
+      })
+    }
+  }
+
+  const exitQuiz = () => {
+    setQuizMode(false)
+    setCurrentQuizTopic(null)
+    setShowQuizResults(false)
+    setGameMode('math')
+    resetGame()
+  }
+// Quiz question banks organized by skill areas
+  const quizQuestions = {
+    basicMath: [
+      {
+        id: 1,
+        question: "What is 2 + 3?",
+        options: ["4", "5", "6", "7"],
+        correct: 1,
+        type: "addition",
+        points: 10,
+        skill: "Basic Addition"
+      },
+      {
+        id: 2,
+        question: "What is 7 - 2?",
+        options: ["4", "5", "6", "7"],
+        correct: 1,
+        type: "subtraction",
+        points: 10,
+        skill: "Basic Subtraction"
+      },
+      {
+        id: 3,
+        question: "What is 4 + 4?",
+        options: ["6", "7", "8", "9"],
+        correct: 2,
+        type: "addition",
+        points: 10,
+        skill: "Basic Addition"
+      },
+      {
+        id: 4,
+        question: "What is 10 - 3?",
+        options: ["6", "7", "8", "9"],
+        correct: 1,
+        type: "subtraction",
+        points: 10,
+        skill: "Basic Subtraction"
+      },
+      {
+        id: 5,
+        question: "What is 6 + 1?",
+        options: ["6", "7", "8", "9"],
+        correct: 1,
+        type: "addition",
+        points: 10,
+        skill: "Basic Addition"
+      }
+    ],
+    advancedMath: [
+      {
+        id: 1,
+        question: "What is 6 × 7?",
+        options: ["40", "41", "42", "43"],
+        correct: 2,
+        type: "multiplication",
+        points: 15,
+        skill: "Multiplication"
+      },
+      {
+        id: 2,
+        question: "What is 24 ÷ 6?",
+        options: ["3", "4", "5", "6"],
+        correct: 1,
+        type: "division",
+        points: 15,
+        skill: "Division"
+      },
+      {
+        id: 3,
+        question: "What is 1/2 + 1/4?",
+        options: ["1/4", "2/6", "3/4", "1/6"],
+        correct: 2,
+        type: "fractions",
+        points: 20,
+        skill: "Fractions"
+      },
+      {
+        id: 4,
+        question: "What is 9 × 8?",
+        options: ["70", "71", "72", "73"],
+        correct: 2,
+        type: "multiplication",
+        points: 15,
+        skill: "Multiplication"
+      },
+      {
+        id: 5,
+        question: "What is 45 ÷ 5?",
+        options: ["8", "9", "10", "11"],
+        correct: 1,
+        type: "division",
+        points: 15,
+        skill: "Division"
+      }
+    ],
+    phonics: [
+      {
+        id: 1,
+        question: "What sound does 'CH' make?",
+        options: ["K sound", "Ch sound", "S sound", "T sound"],
+        correct: 1,
+        type: "phonics",
+        points: 10,
+        skill: "Letter Sounds"
+      },
+      {
+        id: 2,
+        question: "Which word starts with the 'TH' sound?",
+        options: ["Cat", "That", "Sun", "Dog"],
+        correct: 1,
+        type: "phonics",
+        points: 10,
+        skill: "Letter Sounds"
+      },
+      {
+        id: 3,
+        question: "What sound does 'PH' make?",
+        options: ["P sound", "F sound", "H sound", "Ph sound"],
+        correct: 1,
+        type: "phonics",
+        points: 10,
+        skill: "Letter Sounds"
+      },
+      {
+        id: 4,
+        question: "Which letters make the 'ck' sound?",
+        options: ["C and K", "S and H", "T and H", "C and H"],
+        correct: 0,
+        type: "phonics",
+        points: 10,
+        skill: "Letter Combinations"
+      },
+      {
+        id: 5,
+        question: "What sound does 'QU' make?",
+        options: ["K sound", "Kw sound", "Q sound", "W sound"],
+        correct: 1,
+        type: "phonics",
+        points: 10,
+        skill: "Letter Sounds"
+      }
+    ],
+    vocabulary: [
+      {
+        id: 1,
+        question: "What does 'enormous' mean?",
+        options: ["Very small", "Very big", "Very fast", "Very slow"],
+        correct: 1,
+        type: "vocabulary",
+        points: 15,
+        skill: "Word Meanings"
+      },
+      {
+        id: 2,
+        question: "Which word means the same as 'happy'?",
+        options: ["Sad", "Joyful", "Angry", "Tired"],
+        correct: 1,
+        type: "vocabulary",
+        points: 15,
+        skill: "Synonyms"
+      },
+      {
+        id: 3,
+        question: "What does 'cautious' mean?",
+        options: ["Careless", "Careful", "Quick", "Loud"],
+        correct: 1,
+        type: "vocabulary",
+        points: 15,
+        skill: "Word Meanings"
+      },
+      {
+        id: 4,
+        question: "Which word is opposite of 'dark'?",
+        options: ["Black", "Night", "Bright", "Shadow"],
+        correct: 2,
+        type: "vocabulary",
+        points: 15,
+        skill: "Antonyms"
+      },
+      {
+        id: 5,
+        question: "What does 'magnificent' mean?",
+        options: ["Terrible", "Wonderful", "Small", "Quiet"],
+        correct: 1,
+        type: "vocabulary",
+        points: 15,
+        skill: "Word Meanings"
+      }
+    ],
+    reading: [
+      {
+        id: 1,
+        question: "In the story 'The Three Bears', who ate the porridge?",
+        options: ["Goldilocks", "The bears", "The wolf", "The hunter"],
+        correct: 0,
+        type: "comprehension",
+        points: 15,
+        skill: "Story Details"
+      },
+      {
+        id: 2,
+        question: "What is the main idea of a story about friendship?",
+        options: ["Animals", "Being kind to others", "School", "Food"],
+        correct: 1,
+        type: "comprehension",
+        points: 15,
+        skill: "Main Ideas"
+      },
+      {
+        id: 3,
+        question: "If a character feels scared, they might...",
+        options: ["Laugh loudly", "Hide or run", "Dance", "Eat more"],
+        correct: 1,
+        type: "comprehension",
+        points: 15,
+        skill: "Character Feelings"
+      },
+      {
+        id: 4,
+        question: "What comes first in a story?",
+        options: ["The end", "The middle", "The beginning", "The pictures"],
+        correct: 2,
+        type: "comprehension",
+        points: 15,
+        skill: "Story Structure"
+      },
+      {
+        id: 5,
+        question: "Why do we read stories?",
+        options: ["To learn and have fun", "To sleep", "To eat", "To run"],
+        correct: 0,
+        type: "comprehension",
+        points: 15,
+        skill: "Reading Purpose"
+      }
+    ]
+  }
+
+  const quizTopics = [
+    {
+      id: 'basicMath',
+      name: 'Basic Math',
+      description: 'Addition and Subtraction',
+      icon: 'Plus',
+      color: 'from-blue-400 to-blue-600',
+      questions: quizQuestions.basicMath
+    },
+    {
+      id: 'advancedMath',
+      name: 'Advanced Math',
+      description: 'Multiplication, Division & Fractions',
+      icon: 'Calculator',
+      color: 'from-purple-400 to-purple-600',
+      questions: quizQuestions.advancedMath
+    },
+    {
+      id: 'phonics',
+      name: 'Phonics',
+      description: 'Letter Sounds & Combinations',
+      icon: 'Volume2',
+      color: 'from-green-400 to-green-600',
+      questions: quizQuestions.phonics
+    },
+    {
+      id: 'vocabulary',
+      name: 'Vocabulary',
+      description: 'Word Meanings & Usage',
+      icon: 'BookOpen',
+      color: 'from-orange-400 to-orange-600',
+      questions: quizQuestions.vocabulary
+    },
+    {
+      id: 'reading',
+      name: 'Reading',
+      description: 'Comprehension & Stories',
+      icon: 'Book',
+      color: 'from-pink-400 to-pink-600',
+      questions: quizQuestions.reading
+    }
+  ]
 // Mini-game definitions
   const miniGames = [
     {
@@ -591,6 +949,19 @@ useEffect(() => {
           <ApperIcon name="BookOpen" className="w-6 h-6" />
           Reading Quest
         </motion.button>
+<motion.button
+          onClick={() => switchMode('quiz')}
+          className={`px-6 py-3 rounded-2xl font-bold font-fun text-lg flex items-center gap-3 transition-all duration-300 ${
+            gameMode === 'quiz' 
+              ? 'bg-gradient-to-r from-purple-500 to-purple-700 text-white shadow-game' 
+              : 'bg-white/80 text-gray-700 hover:bg-purple/10 border-2 border-purple-500/20'
+          }`}
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
+        >
+          <ApperIcon name="Brain" className="w-6 h-6" />
+          Quiz Mode
+        </motion.button>
       </motion.div>
 
       {/* Stats Bar */}
@@ -644,8 +1015,8 @@ useEffect(() => {
                 style={{ width: `${((currentQuestion + 1) / questions.length) * 100}%` }}
               ></div>
             </div>
-            <div className="text-sm text-gray-500 mt-1">
-              {currentQuestion + 1} / {questions.length}
+<div className="text-sm text-gray-500 mt-1">
+{quizMode ? `Question ${currentQuestion + 1} of ${questions.length}` : `${currentQuestion + 1} / ${questions.length}`}
             </div>
           </div>
         </div>
@@ -665,12 +1036,145 @@ useEffect(() => {
         </div>
       </motion.div>
 
+{/* Quiz Topic Selection */}
+      {gameMode === 'quiz' && !quizMode && !showQuizResults && (
+        <motion.div 
+          initial={{ y: 100, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          transition={{ duration: 0.6, delay: 0.4 }}
+          className="game-card p-6 sm:p-8 lg:p-12 mb-8"
+        >
+          <div className="text-center mb-8">
+            <h2 className="text-3xl font-bold font-fun mb-4">🧠 Choose Your Quiz Topic</h2>
+            <p className="text-gray-600 text-lg">Select a skill area to test your knowledge!</p>
+          </div>
+          
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            {quizTopics.map((topic) => (
+              <motion.button
+                key={topic.id}
+                onClick={() => startQuiz(topic.id)}
+                className={`bg-gradient-to-r ${topic.color} text-white rounded-2xl p-6 text-left hover:shadow-lg transition-all duration-300`}
+                whileHover={{ scale: 1.02, y: -5 }}
+                whileTap={{ scale: 0.98 }}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.3, delay: 0.1 }}
+              >
+                <div className="flex items-start gap-4">
+                  <div className="bg-white/20 p-3 rounded-xl">
+                    <ApperIcon name={topic.icon} className="w-8 h-8" />
+                  </div>
+                  <div className="flex-1">
+                    <h3 className="text-xl font-bold font-fun mb-2">{topic.name}</h3>
+                    <p className="text-white/90 text-sm mb-3">{topic.description}</p>
+                    <div className="flex items-center justify-between">
+                      <span className="text-xs bg-white/20 px-2 py-1 rounded-full">
+                        {topic.questions.length} Questions
+                      </span>
+                      <ApperIcon name="ArrowRight" className="w-5 h-5" />
+                    </div>
+                  </div>
+                </div>
+              </motion.button>
+            ))}
+          </div>
+        </motion.div>
+      )}
+
+      {/* Quiz Results */}
+      {showQuizResults && quizResults && (
+        <motion.div 
+          initial={{ y: 100, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          transition={{ duration: 0.6 }}
+          className="game-card p-6 sm:p-8 lg:p-12 mb-8"
+        >
+          <div className="text-center mb-8">
+            <motion.div
+              initial={{ scale: 0 }}
+              animate={{ scale: 1 }}
+              transition={{ duration: 0.5, delay: 0.2 }}
+              className="text-6xl mb-4"
+            >
+              {quizResults.accuracy >= 90 ? '🏆' : quizResults.accuracy >= 70 ? '🌟' : '📚'}
+            </motion.div>
+            <h2 className="text-3xl font-bold font-fun mb-2">Quiz Complete!</h2>
+            <h3 className="text-xl text-gray-600 mb-6">{quizResults.topic}</h3>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+            <div className="text-center p-4 bg-gradient-to-br from-blue-50 to-blue-100 rounded-2xl">
+              <div className="text-3xl font-bold text-blue-600 font-fun">{quizResults.correctAnswers}</div>
+              <div className="text-blue-800 font-medium">Correct Answers</div>
+              <div className="text-sm text-blue-600">out of {quizResults.totalQuestions}</div>
+            </div>
+            
+            <div className="text-center p-4 bg-gradient-to-br from-green-50 to-green-100 rounded-2xl">
+              <div className="text-3xl font-bold text-green-600 font-fun">{quizResults.accuracy}%</div>
+              <div className="text-green-800 font-medium">Accuracy</div>
+              <div className="text-sm text-green-600">
+                {quizResults.accuracy >= 90 ? 'Excellent!' : quizResults.accuracy >= 70 ? 'Good job!' : 'Keep practicing!'}
+              </div>
+            </div>
+            
+            <div className="text-center p-4 bg-gradient-to-br from-purple-50 to-purple-100 rounded-2xl">
+              <div className="text-3xl font-bold text-purple-600 font-fun">{quizResults.totalScore}</div>
+              <div className="text-purple-800 font-medium">Total Points</div>
+              <div className="text-sm text-purple-600">Well earned!</div>
+            </div>
+          </div>
+          
+          <div className="mb-8">
+            <h4 className="text-lg font-bold mb-4 flex items-center gap-2">
+              <ApperIcon name="Target" className="w-5 h-5 text-primary" />
+              Skills Practiced
+            </h4>
+            <div className="flex flex-wrap gap-2">
+              {quizResults.skills.map((skill, index) => (
+                <span 
+                  key={index}
+                  className="bg-gradient-to-r from-secondary/20 to-secondary/30 text-secondary-dark px-3 py-1 rounded-full text-sm font-medium"
+                >
+                  {skill}
+                </span>
+              ))}
+            </div>
+          </div>
+          
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <motion.button
+              onClick={() => startQuiz(currentQuizTopic?.id)}
+              className="game-button text-lg px-8 py-3"
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+            >
+              <div className="flex items-center gap-2">
+                <ApperIcon name="RotateCcw" className="w-5 h-5" />
+                Try Again
+              </div>
+            </motion.button>
+            
+            <motion.button
+              onClick={exitQuiz}
+              className="bg-gradient-to-r from-gray-400 to-gray-600 text-white font-bold py-3 px-8 rounded-2xl shadow-game hover:shadow-lg transform hover:scale-105 active:scale-95 transition-all duration-200 border-2 border-white/20"
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+            >
+              <div className="flex items-center gap-2">
+                <ApperIcon name="Home" className="w-5 h-5" />
+                Back to Home
+              </div>
+            </motion.button>
+          </div>
+        </motion.div>
+      )}
       {/* Main Game Area */}
       <motion.div 
         initial={{ y: 100, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ duration: 0.6, delay: 0.4 }}
-        className="game-card p-6 sm:p-8 lg:p-12 relative overflow-hidden"
+className={`game-card p-6 sm:p-8 lg:p-12 relative overflow-hidden ${(gameMode === 'quiz' && !quizMode) || showQuizResults ? 'hidden' : ''}`}
       >
         {/* Background decoration */}
         <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-bl from-primary/10 to-transparent rounded-full -translate-y-16 translate-x-16"></div>
@@ -696,7 +1200,7 @@ useEffect(() => {
               />
             </div>
             <h2 className="text-lg sm:text-xl font-bold text-gray-600 font-fun">
-              {gameMode === 'math' ? 'Math Challenge' : 'Reading Challenge'}
+{quizMode ? `${currentQuizTopic?.name} Quiz` : gameMode === 'math' ? 'Math Challenge' : 'Reading Challenge'}
             </h2>
           </div>
           
