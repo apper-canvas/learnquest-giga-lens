@@ -1967,6 +1967,43 @@ className={`game-card p-6 sm:p-8 lg:p-12 relative overflow-hidden ${(gameMode ==
             </div>
           </div>
 
+{/* Story Question */}
+          {currentStory.chapters[storyProgress.currentChapter]?.question && (
+            <div className="mb-8">
+              <h4 className="text-lg font-bold mb-4 text-center">📚 Comprehension Question</h4>
+              <div className="bg-gradient-to-r from-blue-50 to-blue-100 rounded-2xl p-6 mb-6">
+                <h5 className="text-xl font-bold text-gray-800 mb-4 text-center">
+                  {currentStory.chapters[storyProgress.currentChapter].question.text}
+                </h5>
+                <div className="grid grid-cols-1 gap-3">
+                  {currentStory.chapters[storyProgress.currentChapter].question.options.map((option, index) => (
+                    <motion.button
+                      key={index}
+                      onClick={() => handleStoryQuestionSubmit(index)}
+                      className="question-option text-left font-medium text-lg p-4 hover:border-blue-400 hover:bg-blue-50"
+                      initial={{ x: -30, opacity: 0 }}
+                      animate={{ x: 0, opacity: 1 }}
+                      transition={{ duration: 0.3, delay: index * 0.1 }}
+                      whileHover={{ scale: 1.02 }}
+                      whileTap={{ scale: 0.98 }}
+                    >
+                      <div className="flex items-center gap-3">
+                        <div className="w-8 h-8 rounded-full border-2 border-blue-400 flex items-center justify-center font-bold text-blue-600">
+                          {String.fromCharCode(65 + index)}
+                        </div>
+                        <span className="font-fun text-gray-800">{option}</span>
+                      </div>
+                    </motion.button>
+                  ))}
+                </div>
+                <div className="mt-4 p-3 bg-blue-100 rounded-lg">
+                  <p className="text-sm text-blue-800">
+                    <strong>💡 Tip:</strong> Think about what you just read in the story to answer this question!
+                  </p>
+                </div>
+              </div>
+            </div>
+          )}
           {/* Story Question */}
 
           {/* Continue Button */}
