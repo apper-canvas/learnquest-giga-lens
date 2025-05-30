@@ -20,6 +20,7 @@ const [quizMode, setQuizMode] = useState(false)
   const [quizResults, setQuizResults] = useState(null)
   const [showQuizResults, setShowQuizResults] = useState(false)
 
+// Static question data
   const mathQuestions = [
     {
       id: 1,
@@ -90,149 +91,7 @@ const [quizMode, setQuizMode] = useState(false)
     }
   ]
 
-const questions = quizMode ? getCurrentQuizQuestions() : (gameMode === 'math' ? mathQuestions : readingQuestions)
-
-  const handleAnswerSelect = (answerIndex) => {
-    if (showResult) return
-    setSelectedAnswer(answerIndex)
-  }
-
-  const handleSubmit = () => {
-    if (selectedAnswer === null) return
-
-    const isCorrect = selectedAnswer === questions[currentQuestion].correct
-    setShowResult(true)
-
-    if (isCorrect) {
-      const points = questions[currentQuestion].points
-      setScore(prev => prev + points)
-      setStreak(prev => prev + 1)
-      
-      if (streak >= 2) {
-        setShowCelebration(true)
-        setTimeout(() => setShowCelebration(false), 2000)
-      }
-      
-      toast.success(`Awesome! +${points} points! 🌟`, {
-        position: "top-center",
-        autoClose: 2000,
-      })
-    } else {
-      setStreak(0)
-      setHearts(prev => Math.max(0, prev - 1))
-      toast.error("Oops! Try again next time! 💪", {
-        position: "top-center",
-        autoClose: 2000,
-      })
-    }
-
-    setTimeout(() => {
-      if (currentQuestion < questions.length - 1) {
-        setCurrentQuestion(prev => prev + 1)
-        setSelectedAnswer(null)
-        setShowResult(false)
-      } else {
-// Game/Quiz completed
-if (quizMode) {
-          handleQuizComplete()
-        } else {
-          toast.success(`Game Complete! Final Score: ${score}! 🎉`, {
-            position: "top-center",
-            autoClose: 3000,
-          })
-          resetGame()
-        }
-}
-    }, 2000)
-  }
-
-  const resetGame = () => {
-    setCurrentQuestion(0)
-    setSelectedAnswer(null)
-    setShowResult(false)
-    setScore(0)
-    setStreak(0)
-    setHearts(3)
-  }
-
-  const switchMode = (mode) => {
-    setGameMode(mode)
-    resetGame()
-    toast.info(`Switched to ${mode === 'math' ? 'Math' : 'Reading'} Quest! 📚`, {
-      position: "top-center",
-      autoClose: 2000,
-    })
-  }
-// Quiz management functions
-  const startQuiz = (topicId) => {
-    const topic = quizTopics.find(t => t.id === topicId)
-    if (topic) {
-      setCurrentQuizTopic(topic)
-      setCurrentQuestion(0)
-      setSelectedAnswer(null)
-      setShowResult(false)
-      setScore(0)
-      setStreak(0)
-      setHearts(3)
-      setQuizMode(true)
-      setShowQuizResults(false)
-      toast.info(`Starting ${topic.name} Quiz! 📚`, {
-        position: "top-center",
-        autoClose: 2000,
-      })
-    }
-  }
-
-  const getCurrentQuizQuestions = () => {
-    return currentQuizTopic ? currentQuizTopic.questions : []
-  }
-
-  const handleQuizComplete = () => {
-    const quizQuestions = getCurrentQuizQuestions()
-    const totalQuestions = quizQuestions.length
-    const accuracy = Math.round((score / (totalQuestions * 15)) * 100) // Assuming average 15 points per question
-    
-    const results = {
-      topic: currentQuizTopic.name,
-      totalQuestions,
-      correctAnswers: Math.floor(score / 15), // Approximate correct answers
-      accuracy,
-      totalScore: score,
-      skills: [...new Set(quizQuestions.map(q => q.skill))],
-      timeSpent: Date.now() // Simple timestamp for now
-    }
-    
-    setQuizResults(results)
-    setShowQuizResults(true)
-    setQuizMode(false)
-    
-    // Achievement toasts based on performance
-    if (accuracy >= 90) {
-      toast.success(`🏆 Perfect! You mastered ${currentQuizTopic.name}!`, {
-        position: "top-center",
-        autoClose: 3000,
-      })
-    } else if (accuracy >= 70) {
-      toast.success(`🌟 Great job! ${accuracy}% accuracy in ${currentQuizTopic.name}!`, {
-        position: "top-center",
-        autoClose: 3000,
-      })
-    } else {
-      toast.info(`📚 Keep practicing ${currentQuizTopic.name}! You're improving!`, {
-        position: "top-center",
-        autoClose: 3000,
-      })
-    }
-  }
-
-  const exitQuiz = () => {
-    setQuizMode(false)
-    setCurrentQuizTopic(null)
-    setShowQuizResults(false)
-    setGameMode('math')
-    resetGame()
-  }
-// Quiz question banks organized by skill areas
+  // Quiz question banks organized by skill areas
   const quizQuestions = {
     basicMath: [
       {
@@ -513,7 +372,8 @@ if (quizMode) {
       questions: quizQuestions.reading
     }
   ]
-// Mini-game definitions
+
+  // Mini-game definitions
   const miniGames = [
     {
       id: 'memory',
@@ -556,6 +416,173 @@ if (quizMode) {
       points: 25
     }
   ]
+
+  // Helper functions
+  const getCurrentQuizQuestions = () => {
+    return currentQuizTopic ? currentQuizTopic.questions : []
+  }
+
+  // Quiz management functions
+  const startQuiz = (topicId) => {
+    const topic = quizTopics.find(t => t.id === topicId)
+    if (topic) {
+      setCurrentQuizTopic(topic)
+      setCurrentQuestion(0)
+      setSelectedAnswer(null)
+      setShowResult(false)
+      setScore(0)
+      setStreak(0)
+      setHearts(3)
+      setQuizMode(true)
+      setShowQuizResults(false)
+      toast.info(`Starting ${topic.name} Quiz! 📚`, {
+        position: "top-center",
+        autoClose: 2000,
+      })
+    }
+  }
+
+  const handleQuizComplete = () => {
+    const quizQuestions = getCurrentQuizQuestions()
+    const totalQuestions = quizQuestions.length
+    const accuracy = Math.round((score / (totalQuestions * 15)) * 100) // Assuming average 15 points per question
+    
+    const results = {
+      topic: currentQuizTopic.name,
+      totalQuestions,
+      correctAnswers: Math.floor(score / 15), // Approximate correct answers
+      accuracy,
+      totalScore: score,
+      skills: [...new Set(quizQuestions.map(q => q.skill))],
+      timeSpent: Date.now() // Simple timestamp for now
+    }
+    
+    setQuizResults(results)
+    setShowQuizResults(true)
+    setQuizMode(false)
+    
+    // Achievement toasts based on performance
+    if (accuracy >= 90) {
+      toast.success(`🏆 Perfect! You mastered ${currentQuizTopic.name}!`, {
+        position: "top-center",
+        autoClose: 3000,
+      })
+    } else if (accuracy >= 70) {
+      toast.success(`🌟 Great job! ${accuracy}% accuracy in ${currentQuizTopic.name}!`, {
+        position: "top-center",
+        autoClose: 3000,
+      })
+    } else {
+      toast.info(`📚 Keep practicing ${currentQuizTopic.name}! You're improving!`, {
+        position: "top-center",
+        autoClose: 3000,
+      })
+    }
+  }
+
+  const exitQuiz = () => {
+    setQuizMode(false)
+    setCurrentQuizTopic(null)
+    setShowQuizResults(false)
+    setGameMode('math')
+    resetGame()
+  }
+
+  // Reactive questions based on current mode and state
+  const questions = useMemo(() => {
+    if (quizMode) {
+      return getCurrentQuizQuestions()
+    }
+    return gameMode === 'math' ? mathQuestions : readingQuestions
+  }, [quizMode, currentQuizTopic, gameMode])
+const switchMode = (mode) => {
+    setGameMode(mode)
+    setQuizMode(false)
+    setCurrentQuizTopic(null)
+    setShowQuizResults(false)
+    resetGame()
+    const modeText = mode === 'math' ? 'Math' : mode === 'reading' ? 'Reading' : 'Quiz'
+    toast.info(`Switched to ${modeText} Quest! 📚`, {
+      position: "top-center",
+      autoClose: 2000,
+    })
+  }
+
+  const resetGame = () => {
+    setCurrentQuestion(0)
+    setSelectedAnswer(null)
+    setShowResult(false)
+    setScore(0)
+    setStreak(0)
+    setHearts(3)
+    setShowCelebration(false)
+  }
+
+  const handleAnswerSelect = (answerIndex) => {
+    if (showResult) return
+    setSelectedAnswer(answerIndex)
+  }
+
+  const handleSubmit = () => {
+    if (selectedAnswer === null || showResult) return
+    
+    setShowResult(true)
+    const isCorrect = selectedAnswer === questions[currentQuestion].correct
+    
+    if (isCorrect) {
+      const points = questions[currentQuestion].points || 10
+      setScore(prev => prev + points)
+      setStreak(prev => prev + 1)
+      
+      // Streak bonus
+      if (streak + 1 >= 3) {
+        setScore(prev => prev + 50)
+        setShowCelebration(true)
+        setTimeout(() => setShowCelebration(false), 2000)
+      }
+      
+      toast.success(`Correct! +${points} points! 🎉`, {
+        position: "top-center",
+        autoClose: 1500,
+      })
+    } else {
+      setStreak(0)
+      setHearts(prev => Math.max(0, prev - 1))
+      
+      if (hearts <= 1) {
+        toast.error("Game Over! Try again! 💪", {
+          position: "top-center",
+          autoClose: 2000,
+        })
+        setTimeout(resetGame, 2000)
+        return
+      }
+      
+      toast.error("Not quite! Try again! 💭", {
+        position: "top-center",
+        autoClose: 1500,
+      })
+    }
+    
+    // Move to next question after delay
+    setTimeout(() => {
+      if (currentQuestion + 1 >= questions.length) {
+        if (quizMode) {
+          handleQuizComplete()
+        } else {
+          toast.success("Level Complete! Great job! 🌟", {
+            position: "top-center",
+            autoClose: 3000,
+          })
+          resetGame()
+        }
+      } else {
+        setCurrentQuestion(prev => prev + 1)
+        setSelectedAnswer(null)
+        setShowResult(false)
+      }
+    }, 2000)
+  }
 
   const launchMiniGame = (gameId) => {
     setCurrentMiniGame(gameId)
@@ -723,9 +750,9 @@ const generateSequence = () => {
       setTimeout(() => setShowSequence(false), (level + 2) * 800)
     }
 
-    useEffect(() => {
+useEffect(() => {
       generateSequence()
-    }, [level])
+    }, [level, generateSequence])
 
 
     const handleColorClick = (color) => {
