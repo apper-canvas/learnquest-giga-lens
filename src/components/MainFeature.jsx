@@ -1519,19 +1519,6 @@ useEffect(() => {
           <ApperIcon name="Brain" className="w-6 h-6" />
           Quiz Mode
         </motion.button>
-<motion.button
-          onClick={() => switchMode('stories')}
-          className={`px-6 py-3 rounded-2xl font-bold font-fun text-lg flex items-center gap-3 transition-all duration-300 ${
-            gameMode === 'stories' 
-              ? 'bg-gradient-to-r from-pink-500 to-pink-700 text-white shadow-game' 
-              : 'bg-white/80 text-gray-700 hover:bg-pink/10 border-2 border-pink-500/20'
-          }`}
-          whileHover={{ scale: 1.05 }}
-          whileTap={{ scale: 0.95 }}
-        >
-          <ApperIcon name="BookOpen" className="w-6 h-6" />
-          Interactive Stories
-        </motion.button>
       </motion.div>
 
       {/* Stats Bar */}
