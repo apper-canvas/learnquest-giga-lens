@@ -818,7 +818,8 @@ useEffect(() => {
     const [sequence, setSequence] = useState([])
     const [userSequence, setUserSequence] = useState([])
     const [showSequence, setShowSequence] = useState(true)
-    const [level, setLevel] = useState(1)
+const [level, setLevel] = useState(1)
+    const [currentSequenceIndex, setCurrentSequenceIndex] = useState(0)
 
 const generateSequence = () => {
       const colors = ['red', 'blue', 'green', 'yellow']
@@ -828,7 +829,22 @@ const generateSequence = () => {
       setSequence(newSequence)
       setUserSequence([])
       setShowSequence(true)
-      setTimeout(() => setShowSequence(false), (level + 2) * 800)
+      setCurrentSequenceIndex(0)
+      
+      // Show each color in sequence with timing
+      const showPattern = () => {
+        let index = 0
+        const interval = setInterval(() => {
+          setCurrentSequenceIndex(index)
+          index++
+          if (index >= newSequence.length) {
+            clearInterval(interval)
+            setTimeout(() => setShowSequence(false), 800)
+          }
+        }, 800)
+      }
+      
+      setTimeout(showPattern, 500)
     }
 
 useEffect(() => {
@@ -871,7 +887,7 @@ useEffect(() => {
                 color === 'red' ? 'bg-red-400' :
                 color === 'blue' ? 'bg-blue-400' :
                 color === 'green' ? 'bg-green-400' : 'bg-yellow-400'
-              } ${showSequence && sequence[userSequence.length] === color ? 'animate-glow' : ''}`}
+} ${showSequence && sequence[currentSequenceIndex] === color ? 'animate-glow' : ''}`}
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
             />
