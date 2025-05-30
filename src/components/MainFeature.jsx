@@ -1014,9 +1014,17 @@ const switchMode = (mode) => {
     setQuizMode(false)
     setCurrentQuizTopic(null)
     setShowQuizResults(false)
+    
+    // Reset story-related states when switching modes
+    if (mode !== 'stories') {
+      setStoryMode(false)
+      setCurrentStory(null)
+      setShowStoryResults(false)
+    }
+    
     resetGame()
-const modeText = mode === 'math' ? 'Math' : mode === 'reading' ? 'Reading' : mode === 'quiz' ? 'Quiz' : mode === 'stories' ? 'Stories' : 'Unknown'
-    toast.info(`Switched to ${modeText} Quest! 📚`, {
+const modeText = mode === 'math' ? 'Math' : mode === 'reading' ? 'Reading' : mode === 'quiz' ? 'Quiz' : mode === 'stories' ? 'Interactive Stories' : 'Unknown'
+    toast.info(`Switched to ${modeText} ${mode === 'stories' ? '' : 'Quest'}! 📚`, {
       position: "top-center",
       autoClose: 2000,
     })
