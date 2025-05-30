@@ -527,10 +527,10 @@ const switchMode = (mode) => {
     if (selectedAnswer === null || showResult) return
     
     setShowResult(true)
-    const isCorrect = selectedAnswer === questions[currentQuestion].correct
+const isCorrect = selectedAnswer === questions?.[currentQuestion]?.correct
     
     if (isCorrect) {
-      const points = questions[currentQuestion].points || 10
+const points = questions?.[currentQuestion]?.points || 10
       setScore(prev => prev + points)
       setStreak(prev => prev + 1)
       
@@ -566,7 +566,7 @@ const switchMode = (mode) => {
     
     // Move to next question after delay
     setTimeout(() => {
-      if (currentQuestion + 1 >= questions.length) {
+if (currentQuestion + 1 >= (questions?.length || 0)) {
         if (quizMode) {
           handleQuizComplete()
         } else {
@@ -1244,9 +1244,10 @@ className={`game-card p-6 sm:p-8 lg:p-12 relative overflow-hidden ${(gameMode ==
               onClick={() => handleAnswerSelect(index)}
               className={`question-option text-left font-medium text-lg sm:text-xl p-4 sm:p-6 ${
                 selectedAnswer === index ? 'selected' : ''
+} ${
+                showResult && index === questions?.[currentQuestion]?.correct ? 'correct' : ''
               } ${
-showResult && index === questions?.[currentQuestion]?.correct ? 'correct' : ''
-showResult && selectedAnswer === index && index !== questions?.[currentQuestion]?.correct ? 'incorrect' : ''
+                showResult && selectedAnswer === index && index !== questions?.[currentQuestion]?.correct ? 'incorrect' : ''
               }`}
               disabled={showResult}
               initial={{ x: -50, opacity: 0 }}
