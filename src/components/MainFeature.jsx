@@ -1890,24 +1890,24 @@ transition={{ duration: 0.6, delay: 0.4 }}
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
             >
-              <div className="flex items-center gap-2">
+<div className="flex items-center gap-2">
                 <ApperIcon name="Home" className="w-5 h-5" />
                 Back to Home
               </div>
             </motion.button>
-</motion.button>
           </div>
         </motion.div>
       )}
-
+)}
       {/* Regular Question Interface */}
       <motion.div 
         initial={{ y: 100, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
         transition={{ duration: 0.6, delay: 0.4 }}
-className={`game-card p-6 sm:p-8 lg:p-12 relative overflow-hidden ${(gameMode === 'quiz' && !quizMode) || (gameMode === 'stories' && !storyMode) || showQuizResults || showStoryResults || !questions?.length || (gameMode === 'stories' && !storyMode && !currentStory) ? 'hidden' : ''}`}
-{/* Story Mode Interface */}
-{storyMode && currentStory && gameMode === 'stories' && (
-        <motion.div 
+        className={`game-card p-6 sm:p-8 lg:p-12 relative overflow-hidden ${(gameMode === 'quiz' && !quizMode) || (gameMode === 'stories' && !storyMode) || showQuizResults || showStoryResults || !questions?.length || (gameMode === 'stories' && !storyMode && !currentStory) ? 'hidden' : ''}`}
+      >
+        {/* Story Mode Interface */}
+        {storyMode && currentStory && gameMode === 'stories' && (
           initial={{ y: 100, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           transition={{ duration: 0.6, delay: 0.4 }}
@@ -2061,12 +2061,12 @@ className={`game-card p-6 sm:p-8 lg:p-12 relative overflow-hidden ${(gameMode ==
             </div>
             <p className="text-center text-sm text-gray-500 mt-2">
               Chapter {storyProgress.currentChapter + 1} of {currentStory.chapters.length}
-            </p>
+</p>
           </div>
-</motion.div>
+        </motion.div>
       )}
 
-        {/* Background decoration */}
+      {/* Background decoration */}
         <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-bl from-primary/10 to-transparent rounded-full -translate-y-16 translate-x-16"></div>
         <div className="absolute bottom-0 left-0 w-24 h-24 bg-gradient-to-tr from-secondary/10 to-transparent rounded-full translate-y-12 -translate-x-12"></div>
 
