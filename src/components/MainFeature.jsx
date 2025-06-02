@@ -1022,6 +1022,13 @@ const switchMode = (mode) => {
       setShowStoryResults(false)
     }
     
+    // Handle stories mode specifically
+    if (mode === 'stories') {
+      setStoryMode(false)
+      setCurrentStory(null)
+      setShowStoryResults(false)
+    }
+    
     resetGame()
 const modeText = mode === 'math' ? 'Math' : mode === 'reading' ? 'Reading' : mode === 'quiz' ? 'Quiz' : mode === 'stories' ? 'Interactive Stories' : 'Unknown'
     toast.info(`Switched to ${modeText} ${mode === 'stories' ? '' : 'Quest'}! 📚`, {
