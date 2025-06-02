@@ -1027,11 +1027,17 @@ const switchMode = (mode) => {
       setStoryMode(false)
       setCurrentStory(null)
       setShowStoryResults(false)
+      toast.info('Switched to Interactive Stories! 📚', {
+        position: "top-center",
+        autoClose: 2000,
+      })
+      resetGame()
+      return
     }
     
     resetGame()
-const modeText = mode === 'math' ? 'Math' : mode === 'reading' ? 'Reading' : mode === 'quiz' ? 'Quiz' : mode === 'stories' ? 'Interactive Stories' : 'Unknown'
-    toast.info(`Switched to ${modeText} ${mode === 'stories' ? '' : 'Quest'}! 📚`, {
+    const modeText = mode === 'math' ? 'Math' : mode === 'reading' ? 'Reading' : mode === 'quiz' ? 'Quiz' : 'Unknown'
+    toast.info(`Switched to ${modeText} Quest! 📚`, {
       position: "top-center",
       autoClose: 2000,
     })
