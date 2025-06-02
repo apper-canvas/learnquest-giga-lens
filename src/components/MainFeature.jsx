@@ -1905,17 +1905,18 @@ transition={{ duration: 0.6, delay: 0.4 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ duration: 0.6, delay: 0.4 }}
         className={`game-card p-6 sm:p-8 lg:p-12 relative overflow-hidden ${(gameMode === 'quiz' && !quizMode) || (gameMode === 'stories' && !storyMode) || showQuizResults || showStoryResults || !questions?.length || (gameMode === 'stories' && !storyMode && !currentStory) ? 'hidden' : ''}`}
-      >
+>
         {/* Story Mode Interface */}
         {storyMode && currentStory && gameMode === 'stories' && (
-          initial={{ y: 100, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          transition={{ duration: 0.6, delay: 0.4 }}
-          className="game-card p-6 sm:p-8 lg:p-12 relative overflow-hidden"
-        >
-          {/* Story Header */}
-          <div className="text-center mb-8">
-            <div className="flex items-center justify-center gap-3 mb-4">
+          <motion.div
+            initial={{ y: 100, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            transition={{ duration: 0.6, delay: 0.4 }}
+            className="game-card p-6 sm:p-8 lg:p-12 relative overflow-hidden"
+          >
+            {/* Story Header */}
+            <div className="text-center mb-8">
+              <div className="flex items-center justify-center gap-3 mb-4">
               <div className="bg-gradient-to-br from-pink-500/20 to-pink-700/20 p-3 rounded-2xl">
                 <ApperIcon name="BookOpen" className="w-8 h-8 text-pink-600" />
               </div>
